@@ -34,12 +34,12 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <mvc:interceptors>
+    <!--<mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/admin/index"/>
             <bean class="com.um.psystem.interceptor.RefreshInterceptor"></bean>
         </mvc:interceptor>
-    </mvc:interceptors>
+    </mvc:interceptors>-->
 
     <!-- 自定义异常处理 -->
     <bean id="handlerExceptionResolver" class="com.um.psystem.exception.AnnotationHandlerMethodExceptionResolver">

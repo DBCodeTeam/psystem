@@ -49,8 +49,8 @@ public class RoleResourceService extends BaseService<RoleResourceMapper, RoleRes
                 for(User user:list_user){
                     System.out.println(user.getName());
                     AuthUtils.refreshAuthorizing(user.getName());
+                    //AuthUtils.refreshAuthorizing(user.getName());
                 }
-
                 return 1;
             }
         }

@@ -63,8 +63,8 @@ public class AuthUtils {
     public static void refreshAuthorizing(String username){
         RealmSecurityManager rsm = (RealmSecurityManager)SecurityUtils.getSecurityManager();
         UserAuthRealm myRealm = (UserAuthRealm)rsm.getRealms().iterator().next();
-
-        Subject subject = SecurityUtils.getSubject();
+        myRealm.clearAuthorizationInfo(username);
+        /*Subject subject = SecurityUtils.getSubject();
         String realmName = subject.getPrincipals().getRealmNames().iterator().next();
         if("admin".equals(username)){
             myRealm.getAuthorizationCache().remove(subject.getPrincipals());
@@ -73,7 +73,7 @@ public class AuthUtils {
             subject.runAs(principals);
             myRealm.getAuthorizationCache().remove(subject.getPrincipals());
             subject.releaseRunAs();
-        }
+        }*/
 
         //System.out.println(myRealm.getAuthorizationCache());
 
