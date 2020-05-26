@@ -15,16 +15,21 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Function:shiro权限控制. <br/>
@@ -32,6 +37,9 @@ import java.util.List;
 @Service("userAuthRealm")
 public class UserAuthRealm extends AuthorizingRealm {
     private static final Logger logger = LoggerFactory.getLogger(UserAuthRealm.class);
+
+    @Autowired
+    EhCacheManager ehCacheManager;
 
     @Resource
     private IUserService userService;
@@ -45,17 +53,17 @@ public class UserAuthRealm extends AuthorizingRealm {
     public UserAuthRealm(){
 
         System.out.println("=============初始化realm==============");
-        super.setName(Const.MY_REALM);
+        //super.setName(Const.MY_REALM);
 
         setCachingEnabled(true);
 
         /* 允许认证缓存 */
         setAuthenticationCachingEnabled(true);
-        setAuthenticationCacheName(Const.AUTH_REALM_CACHE);
+        //setAuthenticationCacheName(Const.AUTH_REALM_CACHE);
 
         /* 允许授权缓存 */
         setAuthorizationCachingEnabled(true);
-        setAuthorizationCacheName(Const.PERM_REALM_CACHE);
+        //setAuthorizationCacheName(Const.PERM_REALM_CACHE);
 
 
        //super.setAuthenticationCachingEnabled(true);
@@ -183,6 +191,22 @@ public class UserAuthRealm extends AuthorizingRealm {
 
     public void clearAuthz(){
         this.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
+    }
+
+    public void clearAuthorizationInfo(String username){
+        Cache<Object, Object> cache = ehCacheManager.getCache(UserAuthRealm.class.getName()+".authorizationCache");
+        //cache.remove(username);
+        Set<Object> keys=cache.keys();
+        Iterator<Object> it=keys.iterator();
+        System.out.println(keys);
+        while(it.hasNext()){
+            Object key=it.next();
+            System.out.println(key.getClass());
+            System.out.println("==============666="+key.toString()+"=666===============");
+            if(username.equals(key.toString())){
+                cache.remove(key);
+            }
+        }
     }
 
 }
