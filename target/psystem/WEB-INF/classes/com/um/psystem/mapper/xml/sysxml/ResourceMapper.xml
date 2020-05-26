@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.um.psystem.mapper.platform.sysMapper.ResourceMapper">
+
+    <!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 -->
+   <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+    <!--<cache type="org.mybatis.caches.ehcache.EhcacheCache" />-->
+
+    <!--通过<resultMap>映射实体类属性名和表的字段名对应关系 -->
+    <resultMap id="BaseResultMap" type="com.um.psystem.entity.Resource">
+        <id property="id" column="id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="url" column="url"/>
+        <result property="type" column="type"/>
+        <result property="status" column="status"/>
+        <result property="sequence" column="sequence"/>
+        <result property="isFixed" column="is_fixed"/>
+        <result property="icon" column="icon"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, create_time AS createTime, is_deleted AS isDeleted, update_time AS updateTime, code, description, icon, is_fixed AS isFixed, name, sequence, status, type, url, parent_id AS parentId
+    </sql>
+
+    <select id="findResourceByRoleCode" resultMap="BaseResultMap" resultType="com.um.psystem.entity.Resource" useCache="false">
+        select rs.* from sys_resource rs
+        left join sys_role_resource rr on rr.resource_id = rs.id
+        left join sys_role r on rr.role_id = r.id
+        where r.`code` = #{roleCode} or r.id =  #{roleCode}
+    </select>
+
+    <select id="findResourceByUsernameAndType" resultMap="BaseResultMap" resultType="com.um.psystem.entity.Resource">
+        select rs.* from sys_resource rs
+        left join sys_role_resource rr on rr.resource_id = rs.id
+        left join sys_role r on rr.role_id = r.id
+        left join sys_user_role ur on ur.role_id = r.id
+        left join sys_user u on ur.user_id = u.id
+        where (u.username = #{username} or u.id = #{username})
+        <if test="type != null and type !=''">
+            and rs.type = #{type}
+        </if>
+    </select>
+
+    <select id="findResource" resultMap="BaseResultMap" resultType="com.um.psystem.entity.Resource">
+        select rs.* from sys_resource rs
+        <where>
+            <if test="parentId != null and parentId !=''">
+                rs.parent_id = #{parentId}
+            </if>
+            <if test="type != null and type !=''">
+                and rs.type = #{type}
+            </if>
+        </where>
+    </select>
+
+</mapper>
