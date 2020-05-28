@@ -3,7 +3,7 @@ package com.um.psystem.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.um.psystem.common.Const;
-import com.um.psystem.model.request.PageRequest;
+import com.um.psystem.model.sysModel.request.PageRequest;
 import com.um.psystem.model.vo.DataGrid;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;

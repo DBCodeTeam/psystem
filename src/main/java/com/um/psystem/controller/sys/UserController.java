@@ -4,12 +4,12 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.um.psystem.controller.BaseController;
 import com.um.psystem.exception.ApplicationException;
 import com.um.psystem.exception.StatusCode;
-import com.um.psystem.model.request.PageRequest;
+import com.um.psystem.model.sysModel.request.PageRequest;
 import com.um.psystem.model.vo.DataGrid;
-import com.um.psystem.model.request.UserRequest;
-import com.um.psystem.model.response.UserResponse;
-import com.um.psystem.service.IUserRoleService;
-import com.um.psystem.service.IUserService;
+import com.um.psystem.model.sysModel.request.UserRequest;
+import com.um.psystem.model.sysModel.response.UserResponse;
+import com.um.psystem.service.sysService.IUserRoleService;
+import com.um.psystem.service.sysService.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * @author Hao
+ * @author zzj
  * @create 2017-03-26
  */
 @RestController

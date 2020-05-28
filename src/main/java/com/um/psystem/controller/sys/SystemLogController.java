@@ -2,9 +2,9 @@ package com.um.psystem.controller.sys;
 
 import com.um.psystem.controller.BaseController;
 import com.um.psystem.model.vo.DataGrid;
-import com.um.psystem.model.request.SystemLogRequest;
-import com.um.psystem.model.response.SystemLogResponse;
-import com.um.psystem.service.ISystemLogService;
+import com.um.psystem.model.sysModel.request.SystemLogRequest;
+import com.um.psystem.model.sysModel.response.SystemLogResponse;
+import com.um.psystem.service.sysService.ISystemLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

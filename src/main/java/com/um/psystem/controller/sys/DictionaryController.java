@@ -1,11 +1,11 @@
 package com.um.psystem.controller.sys;
 
 import com.um.psystem.controller.BaseController;
-import com.um.psystem.model.response.Page;
+import com.um.psystem.model.sysModel.response.Page;
 import com.um.psystem.model.vo.DataGrid;
-import com.um.psystem.model.request.DictionaryRequest;
-import com.um.psystem.model.response.DictionaryResponse;
-import com.um.psystem.service.IDictionaryService;
+import com.um.psystem.model.sysModel.request.DictionaryRequest;
+import com.um.psystem.model.sysModel.response.DictionaryResponse;
+import com.um.psystem.service.sysService.IDictionaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

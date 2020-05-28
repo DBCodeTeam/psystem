@@ -2,11 +2,11 @@ package com.um.psystem.controller.sys;
 
 import com.um.psystem.controller.BaseController;
 import com.um.psystem.model.vo.DataGrid;
-import com.um.psystem.model.request.RoleRequest;
-import com.um.psystem.model.response.RoleResponse;
-import com.um.psystem.service.IRoleResourceService;
-import com.um.psystem.service.IRoleService;
-import com.um.psystem.service.IUserRoleService;
+import com.um.psystem.model.sysModel.request.RoleRequest;
+import com.um.psystem.model.sysModel.response.RoleResponse;
+import com.um.psystem.service.sysService.IRoleResourceService;
+import com.um.psystem.service.sysService.IRoleService;
+import com.um.psystem.service.sysService.IUserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
