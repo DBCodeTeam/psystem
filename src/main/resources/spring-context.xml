@@ -42,7 +42,7 @@
     <!-- 扫描切面包路径 -->
     <bean id="logAspect" class="com.um.psystem.aop.LogAspect">
         <property name="logPoint">
-            <bean class="com.um.psystem.service.impl.SystemLogService" />
+            <bean class="com.um.psystem.service.sysService.impl.SystemLogService" />
         </property>
     </bean>
     <aop:config>
