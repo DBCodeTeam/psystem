@@ -1,6 +1,6 @@
 package com.um.psystem.mapper.platform.sysMapper;
 
-import com.um.psystem.entity.UserRole;
+import com.um.psystem.entity.sysEntity.UserRole;
 import com.um.psystem.mapper.BaseMapper;
 
 /**

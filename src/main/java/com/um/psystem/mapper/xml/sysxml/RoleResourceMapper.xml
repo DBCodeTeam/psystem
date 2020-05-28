@@ -3,7 +3,7 @@
 <mapper namespace="com.um.psystem.mapper.platform.sysMapper.RoleResourceMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.um.psystem.entity.RoleResource">
+    <resultMap id="BaseResultMap" type="com.um.psystem.entity.sysEntity.RoleResource">
         <id column="role_id" property="roleId" />
         <result column="resource_id" property="resourceId" />
     </resultMap>

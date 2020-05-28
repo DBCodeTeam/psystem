@@ -3,7 +3,7 @@
 <mapper namespace="com.um.psystem.mapper.platform.sysMapper.DictionaryTypeMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.um.psystem.entity.DictionaryType">
+    <resultMap id="BaseResultMap" type="com.um.psystem.entity.sysEntity.DictionaryType">
         <id column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="is_deleted" property="isDeleted" />

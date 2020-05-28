@@ -1,7 +1,7 @@
 package com.um.psystem.mapper.platform.sysMapper;
 
 import com.um.psystem.mapper.BaseMapper;
-import com.um.psystem.entity.Resource;
+import com.um.psystem.entity.sysEntity.Resource;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

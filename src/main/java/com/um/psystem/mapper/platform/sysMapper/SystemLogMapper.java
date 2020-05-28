@@ -2,8 +2,8 @@ package com.um.psystem.mapper.platform.sysMapper;
 
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
 import com.um.psystem.mapper.BaseMapper;
-import com.um.psystem.entity.SystemLog;
-import com.um.psystem.model.request.SystemLogRequest;
+import com.um.psystem.entity.sysEntity.SystemLog;
+import com.um.psystem.model.sysModel.request.SystemLogRequest;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

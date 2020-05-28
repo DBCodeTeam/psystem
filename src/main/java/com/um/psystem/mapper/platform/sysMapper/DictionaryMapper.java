@@ -1,7 +1,7 @@
 package com.um.psystem.mapper.platform.sysMapper;
 
 import com.um.psystem.mapper.BaseMapper;
-import com.um.psystem.entity.Dictionary;
+import com.um.psystem.entity.sysEntity.Dictionary;
 
 /**
  * <p>

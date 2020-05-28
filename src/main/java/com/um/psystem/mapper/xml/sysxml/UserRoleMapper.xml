@@ -3,7 +3,7 @@
 <mapper namespace="com.um.psystem.mapper.platform.sysMapper.UserRoleMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.um.psystem.entity.UserRole">
+    <resultMap id="BaseResultMap" type="com.um.psystem.entity.sysEntity.UserRole">
         <id column="user_id" property="userId" />
         <result column="role_id" property="roleId" />
     </resultMap>

@@ -7,7 +7,7 @@
     <!--<cache type="org.mybatis.caches.ehcache.EhcacheCache" />-->
 
     <!--通过<resultMap>映射实体类属性名和表的字段名对应关系 -->
-    <resultMap id="BaseResultMap" type="com.um.psystem.entity.Resource">
+    <resultMap id="BaseResultMap" type="com.um.psystem.entity.sysEntity.Resource">
         <id property="id" column="id"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
@@ -29,14 +29,14 @@
         id, create_time AS createTime, is_deleted AS isDeleted, update_time AS updateTime, code, description, icon, is_fixed AS isFixed, name, sequence, status, type, url, parent_id AS parentId
     </sql>
 
-    <select id="findResourceByRoleCode" resultMap="BaseResultMap" resultType="com.um.psystem.entity.Resource" useCache="false">
+    <select id="findResourceByRoleCode" resultMap="BaseResultMap" resultType="com.um.psystem.entity.sysEntity.Resource" useCache="false">
         select rs.* from sys_resource rs
         left join sys_role_resource rr on rr.resource_id = rs.id
         left join sys_role r on rr.role_id = r.id
         where r.`code` = #{roleCode} or r.id =  #{roleCode}
     </select>
 
-    <select id="findResourceByUsernameAndType" resultMap="BaseResultMap" resultType="com.um.psystem.entity.Resource">
+    <select id="findResourceByUsernameAndType" resultMap="BaseResultMap" resultType="com.um.psystem.entity.sysEntity.Resource">
         select rs.* from sys_resource rs
         left join sys_role_resource rr on rr.resource_id = rs.id
         left join sys_role r on rr.role_id = r.id
@@ -48,7 +48,7 @@
         </if>
     </select>
 
-    <select id="findResource" resultMap="BaseResultMap" resultType="com.um.psystem.entity.Resource">
+    <select id="findResource" resultMap="BaseResultMap" resultType="com.um.psystem.entity.sysEntity.Resource">
         select rs.* from sys_resource rs
         <where>
             <if test="parentId != null and parentId !=''">

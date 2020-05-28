@@ -3,7 +3,7 @@
 <mapper namespace="com.um.psystem.mapper.platform.sysMapper.SystemLogMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.um.psystem.entity.SystemLog">
+    <resultMap id="BaseResultMap" type="com.um.psystem.entity.sysEntity.SystemLog">
         <id column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="is_deleted" property="isDeleted" />
@@ -21,7 +21,7 @@
         id, create_time AS createTime, is_deleted AS isDeleted, update_time AS updateTime, content, description, ip, module, response_time AS responseTime, username
     </sql>
 
-    <select id="findSystemLog" resultMap="BaseResultMap" resultType="com.um.psystem.entity.SystemLog">
+    <select id="findSystemLog" resultMap="BaseResultMap" resultType="com.um.psystem.entity.sysEntity.SystemLog">
         select * from sys_log
         <where>
             <if test="request != null and request.username !=null and request.username !=''">
