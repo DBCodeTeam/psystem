@@ -329,10 +329,10 @@
         });
         //$.insdep.control("list.html");
 
-        var cc1 = $('#cc1').combo('panel');
+        /*var cc1 = $('#cc1').combo('panel');
         cc1.panel({cls: "theme-navigate-combobox-panel"});
         var cc2 = $('#cc2').combo('panel');
-        cc2.panel({cls: "theme-navigate-combobox-panel"});
+        cc2.panel({cls: "theme-navigate-combobox-panel"});*/
 
 
         /*$("#open-layout").on("click",function(){
