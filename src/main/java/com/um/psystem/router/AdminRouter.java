@@ -1,9 +1,8 @@
 package com.um.psystem.router;
 
-import com.um.psystem.router.BaseRouter;
-import com.um.psystem.model.response.ResourceResponse;
-import com.um.psystem.model.response.UserResponse;
-import com.um.psystem.service.IResourceService;
+import com.um.psystem.model.sysModel.response.ResourceResponse;
+import com.um.psystem.model.sysModel.response.UserResponse;
+import com.um.psystem.service.sysService.IResourceService;
 import com.um.psystem.utils.Utils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
