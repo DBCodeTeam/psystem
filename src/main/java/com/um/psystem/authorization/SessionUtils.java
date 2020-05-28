@@ -1,7 +1,7 @@
 package com.um.psystem.authorization;
 
 import com.um.psystem.common.Const;
-import com.um.psystem.model.response.UserResponse;
+import com.um.psystem.model.sysModel.response.UserResponse;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 
