@@ -1,8 +1,8 @@
 package com.um.psystem.service;
 
 import com.um.psystem.BaseTest;
-import com.um.psystem.entity.User;
-import com.um.psystem.service.impl.UserService;
+import com.um.psystem.entity.sysEntity.User;
+import com.um.psystem.service.sysService.impl.UserService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
