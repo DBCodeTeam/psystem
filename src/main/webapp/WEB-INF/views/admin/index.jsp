@@ -28,7 +28,7 @@
 <div id="master-layout">
     <div data-options="region:'north',border:false,bodyCls:'theme-header-layout'">
         <div class="theme-navigate">
-            <span class="umspan">九联工程辅助系统</span>
+            <span class="umspan">九联工程协同系统</span>
             <div class="left">
                 <%--<a href="#" class="easyui-linkbutton left-control-switch"><i class="fa fa-bars fa-lg"></i></a>--%>
                 <a href="#" class="easyui-menubutton theme-navigate-user-button"
