@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @TableName(value="ws_eng_assets_type_dtl")
 @Data
 @NoArgsConstructor
-public class AssetsDtail {
+public class AssetsDetail {
      @TableId(value="type_dtl_id", type= IdType.AUTO)
      private Integer typeDtlId;
 

@@ -1,6 +1,6 @@
 package com.um.psystem.exception;
 
-import com.um.psystem.model.sysModel.response.Response;
+import com.um.psystem.model.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;

@@ -3,6 +3,7 @@ package com.um.psystem.entity.mtEntity;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,9 +16,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class AssetsType {
-
     /** 物资分类id */
-    @TableId(value="type_main_id")
+    @TableId(value="type_main_id", type= IdType.AUTO)
     private Integer typeMainId;
 
     /** 物资分类名称 */
