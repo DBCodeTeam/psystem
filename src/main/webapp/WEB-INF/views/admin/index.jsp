@@ -9,7 +9,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta content="always" name="referrer">
-    <title>Maple后台管理平台</title>
+    <title>九联工程协同系统</title>
 
     <%@ include file="/WEB-INF/views/include/common.jsp" %>
 

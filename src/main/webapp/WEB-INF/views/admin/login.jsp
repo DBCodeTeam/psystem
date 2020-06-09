@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta content="always" name="referrer">
 
-    <title>欢迎登录九联工程后台管理平台</title>
+    <title>欢迎登录九联工程协同系统</title>
     <link rel="shortcut icon" href="${ctxstatic}/images/favicon.ico" type="image/x-icon" />
 
     <link href="${ctxstatic}/css/login-style.css" rel="stylesheet" type="text/css"/>
@@ -35,7 +35,7 @@
 </div>
 
 <div class="logintop">
-    <span>欢迎登录九联工程辅助平台</span>
+    <span>欢迎登录九联工程协同系统</span>
     <ul>
         <%--<li><a href="#">回首页</a></li>--%>
         <li><a href="javascript:void(0);">帮助</a></li>

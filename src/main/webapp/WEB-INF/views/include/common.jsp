@@ -38,3 +38,4 @@
 
 <script src="${ctxstatic}/js/utils.js" type="text/javascript"></script>
 <script src="${ctxstatic}/js/ztab.js" type="text/javascript"></script>
+<script src="${ctxstatic}/js/common.js" type="text/javascript"></script>
