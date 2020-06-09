@@ -1,4 +1,4 @@
-package com.um.psystem.model.sysModel.response;
+package com.um.psystem.model;
 
 import java.util.Date;
 

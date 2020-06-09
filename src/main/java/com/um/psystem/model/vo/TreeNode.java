@@ -1,6 +1,6 @@
 package com.um.psystem.model.vo;
 
-import com.um.psystem.model.sysModel.response.IgnoreResponse;
+import com.um.psystem.model.IgnoreResponse;
 
 import java.util.List;
 

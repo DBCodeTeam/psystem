@@ -1,4 +1,4 @@
-package com.um.psystem.model.sysModel.response;
+package com.um.psystem.model;
 
 /**
  * 无需再添加外层实体的

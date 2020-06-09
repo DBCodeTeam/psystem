@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.um.psystem.mapper.platform.mtManageMapper.MtManageMapper">
+<mapper namespace="com.um.psystem.mapper.platform.mtManageMapper.AssetsTypeMapper">
 
     <!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 -->
    <!--<cache type="org.mybatis.caches.ehcache.LoggingEhcache" />-->
@@ -14,6 +14,15 @@
         on r.id = srr.role_id
         where r.id=#{id}
     </select>
+    <!--查找对应部门下的员工-->
+    <select id="findUserByDept" parameterType="java.lang.String" resultType="Map">
+         select a.* from ws_employee a
+         left join
+         ws_dept b on a.depart_no like concat(b.dept_no,'%') and b.isdrop=0
+         where b.dept_name=#{deptName} and a.is_work=1  and b.id is not null
+    </select>
+
+
 
 
 </mapper>
