@@ -1,7 +1,7 @@
 package com.um.psystem.controller.sys;
 
 import com.um.psystem.controller.BaseController;
-import com.um.psystem.model.sysModel.response.Page;
+import com.um.psystem.model.Page;
 import com.um.psystem.model.vo.DataGrid;
 import com.um.psystem.model.sysModel.request.DictionaryTypeRequest;
 import com.um.psystem.model.sysModel.response.DictionaryTypeResponse;
