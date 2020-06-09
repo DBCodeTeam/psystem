@@ -49,6 +49,13 @@
     <ehcache.version>2.10.3</ehcache.version>
     <mybatis.ehcache.version>1.0.0</mybatis.ehcache.version>
     <lombok.version>1.16.18</lombok.version>
+    <jaxen.version>1.1.1</jaxen.version>
+    <jdom.version>1.1</jdom.version>
+    <xfire.version>1.2.6</xfire.version>
+    <hutool.version>5.3.6</hutool.version>
+    <xmlSchema.version>1.1</xmlSchema.version>
+    <wsdl4j.version>1.6.1</wsdl4j.version>
+    <easyexcel.version>2.2.3</easyexcel.version>
   </properties>
 
   <dependencies>
@@ -227,6 +234,12 @@
       <version>${jsp.api.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
+      <version>${hutool.version}</version>
+    </dependency>
     <!--<dependency>
         <groupId>taglibs</groupId>
         <artifactId>standard</artifactId>
@@ -360,6 +373,43 @@
       <artifactId>lombok</artifactId>
       <version>${lombok.version}</version>
       <scope>provided</scope>
+    </dependency>
+
+      <!-- rtx -->
+      <dependency>
+          <groupId>jaxen</groupId>
+          <artifactId>jaxen</artifactId>
+          <version>${jaxen.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.jdom</groupId>
+          <artifactId>jdom</artifactId>
+          <version>${jdom.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.codehaus.xfire</groupId>
+          <artifactId>xfire-aegis</artifactId>
+          <version>${xfire.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.codehaus.xfire</groupId>
+          <artifactId>xfire-core</artifactId>
+          <version>${xfire.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.ws.commons</groupId>
+          <artifactId>XmlSchema</artifactId>
+          <version>${xmlSchema.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>wsdl4j</groupId>
+          <artifactId>wsdl4j</artifactId>
+          <version>${wsdl4j.version}</version>
+      </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>easyexcel</artifactId>
+      <version>${easyexcel.version}</version>
     </dependency>
 
   </dependencies>
