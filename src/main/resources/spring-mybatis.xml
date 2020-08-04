@@ -101,7 +101,7 @@
 
     <!-- MyBatis 动态扫描  -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.um.psystem.mapper.platform.mtManageMapper,com.um.psystem.mapper.platform.sysMapper"/>
+        <property name="basePackage" value="com.um.psystem.mapper.platform"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
         <!--<property name="sqlSessionFactory" ref="sqlSessionFactory" />-->
     </bean>
