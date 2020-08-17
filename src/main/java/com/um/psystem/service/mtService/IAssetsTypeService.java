@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author: zhenjin.zheng
+ * @Author: zzj
  * @Description: 物资分类
  * @Date: 2020/5/27
  */
@@ -26,6 +26,5 @@ public interface IAssetsTypeService {
     public JsonResult<AssetsType> get(Integer id);
 
     public List<AssetsType> getAssetsTypes(Map<String,Object> columnMap);
-
 
 }

@@ -1,5 +1,6 @@
 package com.um.psystem.controller.mtManage;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.alibaba.excel.EasyExcel;
 import com.um.psystem.controller.BaseController;
@@ -7,17 +8,21 @@ import com.um.psystem.entity.ExcelHeader;
 import com.um.psystem.entity.mtEntity.AssetsDetail;
 import com.um.psystem.entity.mtEntity.AssetsType;
 import com.um.psystem.entity.sysEntity.DeptEntity;
+import com.um.psystem.entity.sysEntity.WsUser;
 import com.um.psystem.model.vo.DataGrid;
 import com.um.psystem.model.vo.JsonResult;
+import com.um.psystem.service.mtService.IAssetsApplyService;
 import com.um.psystem.service.mtService.IAssetsDetailService;
 import com.um.psystem.service.mtService.IAssetsTypeService;
 import com.um.psystem.service.sysService.IDeptAndEmpService;
+import com.um.psystem.service.sysService.IWsUserService;
 import com.um.psystem.utils.EasyExcelUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,7 +33,7 @@ import java.util.stream.Collectors;
 
 
 /**
- * @Author: zhenjin.zheng
+ * @Author: zzj
  * @Description: 物资分类控制器
  * @Date: 2020/5/29
  */
@@ -45,6 +50,12 @@ public class AssetsManageController extends BaseController {
     @Autowired
     IDeptAndEmpService iDeptAndEmpService;
 
+    @Autowired
+    IAssetsApplyService iAssetsApplyService;
+
+    @Autowired
+    IWsUserService iWsUserService;
+
     ////数据已存在
     //  throw new ApplicationException(StatusCode.CONFLICT.getCode(), StatusCode.CONFLICT.getMessage());
     /**
@@ -56,6 +67,10 @@ public class AssetsManageController extends BaseController {
        return  JsonResult.success(iMtAssetsService.getAssetsTypes(null));
     }
 
+    /**
+     * 物资一级分类列表(分页)
+     * @return
+     */
     @RequestMapping(value="/list_MainGrid",method = RequestMethod.GET)
     @ResponseBody
     public DataGrid getMainGrid(){
@@ -63,15 +78,73 @@ public class AssetsManageController extends BaseController {
       return buildDataGrid(assetsTypeList,assetsTypeList.size());
     }
 
+    /**
+     * 物资二级分类列表(分页)
+     * @param typeMainId
+     * @return
+     */
     @RequestMapping(value="/list_DetailGrid",method = RequestMethod.POST)
     @ResponseBody
     public DataGrid getDetailGrid(@RequestParam("typeMainId")String typeMainId){
         Map<String,Object> modelMap = new HashMap();
-        modelMap.put("type_main_id",typeMainId);
+        if(StrUtil.isNotBlank(typeMainId)){
+            modelMap.put("type_main_id",typeMainId);
+        }
         List<AssetsDetail> assetsDetailList = iAssetsDetailService.getAssetsDetails(modelMap);
         return buildDataGrid(assetsDetailList,assetsDetailList.size());
     }
 
+    /**
+     * 物资二级分类列表(分页) 没有实体映射
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/list_Detail",method = RequestMethod.POST)
+    @ResponseBody
+    public DataGrid getDetailGrid(@RequestParam Map map){
+        List<Map<String,Object>> assetsDetailList = iAssetsApplyService.getAssets(map);
+        return buildDataGrid(assetsDetailList,assetsDetailList.size());
+    }
+
+    /**
+     * 物资申请列表(分页)
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/list_applyGrid",method = RequestMethod.GET)
+    @ResponseBody
+    public DataGrid getApplyGrid(@RequestParam Map map){
+        List<Map<String,Object>> apply_list = iAssetsApplyService.getApplyList(map);
+        return buildDataGrid(apply_list,Integer.parseInt(apply_list.get(0).get("totals").toString()));
+    }
+
+    /**
+     * 获取流程节点
+     * @return
+     */
+    @RequestMapping(value="/list_flow",method = RequestMethod.POST)
+    @ResponseBody
+    public DataGrid getFlowGrid(@RequestParam Map map){
+        List<Map<String,Object>> flow_list = iAssetsApplyService.getApplyNode(map);
+        return buildDataGrid(flow_list,flow_list.size());
+    }
+
+    /**
+     * 获取流程节点操作员
+     * @return
+     */
+    @RequestMapping(value="/list_operator",method = RequestMethod.POST)
+    @ResponseBody
+    public DataGrid getOperatorGrid(@RequestParam Map map){
+        List<Map<String,Object>> operator_list = iAssetsApplyService.getOperator(map);
+        return buildDataGrid(operator_list,operator_list.size());
+    }
+
+    /**
+     * 添加物资二级分类
+     * @param map
+     * @return
+     */
     @RequestMapping(value="/add_DtlGrid",method = RequestMethod.POST)
     @ResponseBody
     public JsonResult addDtlGrid(@RequestParam Map map){
@@ -93,6 +166,67 @@ public class AssetsManageController extends BaseController {
         return iAssetsDetailService.save(assetsDetail);
     }
 
+    /**
+     * 添加物资申请
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/add_apply",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult addApply(@RequestParam Map map){
+        return iAssetsApplyService.save_apply(map);
+    }
+
+
+    /**
+     * 审核物资申请
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/check_apply",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult checkApply(@RequestParam Map map){
+        return iAssetsApplyService.check_apply(map);
+    }
+
+    /**
+     * 审核物资申请
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/back_apply",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult backApply(HttpServletRequest request, @RequestParam Map map){
+        return iAssetsApplyService.back_apply(request,map);
+    }
+
+    /**
+     * 发放物资
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/issue_apply",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult issueApply(HttpServletRequest request, @RequestParam Map map){
+        return iAssetsApplyService.issue_apply(request,map);
+    }
+
+    /**
+     * 判断当前用户是否可以操作当前节点
+     * @param
+     * @return
+     */
+    @RequestMapping(value="/judge_permission",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult judgePermission(String apply_id,String username,String flowNode){
+        return iAssetsApplyService.judgePermission(apply_id,username,flowNode);
+    }
+
+    /**
+     * 添加物资一级分类
+     * @param map
+     * @return
+     */
     @RequestMapping(value="/add_MainGrid",method = RequestMethod.POST)
     @ResponseBody
     public JsonResult addMainGrid(@RequestParam Map map){
@@ -109,6 +243,11 @@ public class AssetsManageController extends BaseController {
         return iMtAssetsService.save(assetsType);
     }
 
+    /**
+     * 更新物资一级分类
+     * @param map
+     * @return
+     */
     @RequestMapping(value="/update_MainGrid",method = RequestMethod.POST)
     @ResponseBody
     public JsonResult updateMainGrid(@RequestParam Map map){
@@ -126,6 +265,12 @@ public class AssetsManageController extends BaseController {
         return iMtAssetsService.update(assetsType);
     }
 
+
+    /**
+     * 更新物资二级分类
+     * @param map
+     * @return
+     */
     @RequestMapping(value="/update_DtlGrid",method = RequestMethod.POST)
     @ResponseBody
     public JsonResult updateDtlGrid(@RequestParam Map map){
@@ -150,7 +295,10 @@ public class AssetsManageController extends BaseController {
         return iAssetsDetailService.update(assetsDetail);
     }
 
-
+    /**
+     * 部门列表
+     * @return
+     */
     @RequestMapping(value="/list_dept",method = RequestMethod.GET)
     @ResponseBody
     public JsonResult getDept(){
@@ -171,6 +319,101 @@ public class AssetsManageController extends BaseController {
     }
 
     /**
+     * 销售订单列表
+     * @return
+     */
+    @RequestMapping(value="/list_erp",method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResult getErpList(@RequestParam Map map){
+        List<Map<String,Object>> getErpList = iAssetsApplyService.getErpNo(map);
+        List<Map<String, Object>> list = new ArrayList<>();
+        for(Map<String,Object> modelMap:getErpList){
+            Map<String, Object> mapvo = new HashMap<>();
+            mapvo.put("conErpNo",modelMap.get("conErpNo").toString());
+            list.add(mapvo);
+        }
+        return JsonResult.success(list);
+    }
+
+    /**
+     * 销售订单列表
+     * @return
+     */
+    @RequestMapping(value="/getErpInfo",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult getErpInfo(@RequestParam Map map){
+        List<Map<String,Object>> getErpList = iAssetsApplyService.getErpNo(map);
+        return JsonResult.success(getErpList);
+    }
+
+
+
+    /**
+     * 职员列表
+     * @return
+     */
+    @RequestMapping(value="/list_user",method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResult getUserList(){
+        Map paramsMap = new HashMap();
+        paramsMap.put("visible",1);
+        List<WsUser> getUserList = iWsUserService.getUserList(paramsMap);
+        //list存放map，map存放kv值（json），list取需要的字段
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        for(WsUser wsUser:getUserList){
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("user_id",wsUser.getId());
+            map.put("user_name",wsUser.getUsername());
+            list.add(map);
+        }
+        return JsonResult.success(list);
+    }
+
+    /**
+     * 添加操作员信息
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/add_operator",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult addOperator(@RequestParam Map map){
+        return iAssetsApplyService.save(map);
+    }
+
+    /**
+     * 修改操作员信息
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/update_operator",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult updateOperator(@RequestParam Map map){
+        return iAssetsApplyService.update(map);
+    }
+
+    /**
+     * 添加操作员信息
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/add_flow",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult addFlow(@RequestParam Map map){
+        return iAssetsApplyService.save(map);
+    }
+
+    /**
+     * 添加操作员信息
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/update_flow",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult updateFlow(@RequestParam Map map){
+        return iAssetsApplyService.update_flow(map);
+    }
+
+    /**
      * 查询指定分类
      */
     @RequestMapping(value = "/getType/{typeMainId}", method = RequestMethod.GET)
@@ -178,7 +421,6 @@ public class AssetsManageController extends BaseController {
     public JsonResult getType(@PathVariable Integer typeMainId) {
         return  iMtAssetsService.get(typeMainId);
     }
-
     /**
      * 删除指定分类
      */
@@ -186,6 +428,24 @@ public class AssetsManageController extends BaseController {
     @ResponseBody
     public JsonResult delType(@PathVariable Integer typeMainId) {
         return  iMtAssetsService.del(typeMainId);
+    }
+
+    /**
+     * 删除指定操作员
+     */
+    @RequestMapping(value = "/del_operator", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult delOperator(@RequestParam Map map) {
+        return  iAssetsApplyService.del(map);
+    }
+
+    /**
+     * 删除指定流程
+     */
+    @RequestMapping(value = "/del_flow", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult delFLow(@RequestParam Map map) {
+        return  iAssetsApplyService.del_flow(map);
     }
 
     /**
@@ -222,4 +482,6 @@ public class AssetsManageController extends BaseController {
         OutputStream excelOutputStream = EasyExcelUtils.exportDataToExcel(headerList,dataList);
         response.getOutputStream().write(((ByteArrayOutputStream) excelOutputStream).toByteArray());
     }
+
+
 }

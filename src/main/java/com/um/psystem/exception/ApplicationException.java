@@ -1,7 +1,7 @@
 package com.um.psystem.exception;
 
 /**
- * Created by Hao on 2017-03-23.
+ * Created by zzj on 2017-03-23.
  */
 public class ApplicationException extends RuntimeException {
 

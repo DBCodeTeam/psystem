@@ -5,7 +5,7 @@ import com.um.psystem.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
 /**
- * @Author: zhenjin.zheng
+ * @Author: zzj
  * @Description: 物资明细
  * @Date: 2020/5/29
  */

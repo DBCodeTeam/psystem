@@ -8,23 +8,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.beans.Transient;
 import java.io.Serializable;
 
 /**
- * <p>
- *
- * </p>
- *
- * @author zzj
- * @since 2020-05-19
+ * @Author: zzj
+ * @Description: 工作站用户
+ * @Date: 2020/6/16
  */
 @TableName(value="ws_user")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
-
+public class WsUser implements Serializable {
     @TableId(value="id", type= IdType.AUTO)
     private Integer id;
 
@@ -58,7 +53,4 @@ public class User implements Serializable {
      */
     @TableField(value="visible")
     private Integer status;
-
-
-
 }

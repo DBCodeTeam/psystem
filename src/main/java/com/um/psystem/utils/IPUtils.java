@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 
 /**
  * 获取IP工具类
- * @author Hao
+ * @author zzj
  * @create 2017-03-29
  */
 public class IPUtils {

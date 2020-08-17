@@ -6,6 +6,8 @@ import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.um.psystem.exception.StatusCode;
 import com.um.psystem.model.IgnoreResponse;
 import com.um.psystem.model.Response;
+import com.um.psystem.model.sysModel.response.BaseResponse;
+import com.um.psystem.model.vo.JsonResult;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -48,7 +50,7 @@ public class ApplicationJsonHttpMessageConverter extends FastJsonHttpMessageConv
 
         //响应结果
         String result = "";
-        if(obj instanceof IgnoreResponse){
+        if(obj instanceof IgnoreResponse || (obj instanceof JsonResult)){
             result = JSON.toJSONString(obj, feature, writeMapNullValue, writeNullStringAsEmpty, writeDateUseDateFormat);
         }else if(obj instanceof List){
             List list = (List) obj;

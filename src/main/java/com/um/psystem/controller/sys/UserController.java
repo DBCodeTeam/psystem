@@ -94,7 +94,7 @@ public class UserController extends BaseController {
      * @return
      */
     @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public DataGrid getPage(UserRequest request) {
+    public DataGrid getPage(UserRequest request,PageRequest pageRequest) {
         Page<UserResponse> page = userService.getPage(getPagination(request), request);
         return super.buildDataGrid(page);
     }

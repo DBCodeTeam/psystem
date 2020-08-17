@@ -20,12 +20,9 @@ public class UserResponse extends BaseResponse {
     /**
      * 性别：0=男，1=女
      */
-    private Integer gender;
+    private String gender;
 
-    /**
-     * 是否固定， 0默认为不固定，1=固定；固定就不能再去修改了
-     */
-    private Integer isFixed;
+
 
     /**
      * 状态：0=启用，1=禁用
@@ -64,20 +61,12 @@ public class UserResponse extends BaseResponse {
         this.mobile = mobile;
     }
 
-    public Integer getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Integer gender) {
+    public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    public Integer getIsFixed() {
-        return isFixed;
-    }
-
-    public void setIsFixed(Integer isFixed) {
-        this.isFixed = isFixed;
     }
 
     public Integer getStatus() {

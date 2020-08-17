@@ -1,7 +1,7 @@
 package com.um.psystem.utils;
 
 /**
- * @author Hao
+ * @author zzj
  * @create 2017-04-10
  */
 public class StringUtils {

@@ -16,4 +16,6 @@ public interface AssetsTypeMapper extends BaseMapper<AssetsType> {
     public List<Map<String,Object>> findMtCategory(@Param("id")String id);
 
     public List<Map<String,Object>> findUserByDept(@Param("deptName") String deptName);
+
+    public void callProcedure(Map map);
 }

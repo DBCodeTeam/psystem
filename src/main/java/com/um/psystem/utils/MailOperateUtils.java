@@ -11,7 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 /**
- * @Author: zhenjin.zheng
+ * @Author: zzj
  * @Description:
  * @Date: 2020/6/3
  */
@@ -96,7 +96,7 @@ public class MailOperateUtils {
 
     public static void main(String[]args){
         try {
-            sendMail("邮件发送测试","测试测试","zhenjin.zheng@unionman.com.cn");
+            sendMail("邮件发送测试","测试测试","zzj@unionman.com.cn");
         } catch (MessagingException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

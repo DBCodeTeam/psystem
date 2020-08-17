@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author: zhenjin.zheng
+ * @Author: zzj
  * @Description:
  * @Date: 2020/6/2
  */
 public interface IDeptAndEmpService {
 
-    public List<DeptEntity> getDeptList(Map<String,Object> columnMap);
+    List<DeptEntity> getDeptList(Map<String,Object> columnMap);
 }

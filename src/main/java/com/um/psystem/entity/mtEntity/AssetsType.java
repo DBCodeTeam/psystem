@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @Author: zhenjin.zheng
+ * @Author: zzj
  * @Description: 物资分类实体
  * @Date: 2020/5/28
  */

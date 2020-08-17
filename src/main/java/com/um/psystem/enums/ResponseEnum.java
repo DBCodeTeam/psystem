@@ -1,11 +1,17 @@
-package com.um.psystem.exception;
+package com.um.psystem.enums;
+
+import lombok.ToString;
 
 /**
- * Created by zzj on 2017-03-23.
+ * @author zzj
+ * @description: 数据信息状态枚举类
+ * @date 2019/02/19 15:54:22
  */
-public enum StatusCode {
+@ToString
+public enum ResponseEnum {
 
-    /*
+
+     /*
         错误码格式说明（示例：202001）
         --------------------------------------------------------------------
         服务级错误（1为系统级错误）	服务模块代码(即业务模块标识)	具体错误代码
@@ -14,7 +20,10 @@ public enum StatusCode {
     */
 
     /*常用的状态码，业务模块的状态码请勿添加在此处，而应该是在各个业务模块定义，格式如上*/
-    OK(200, "ok"),//成功
+    /**
+     * 0 表示返回成功
+     */
+    SUCCESS(200, "ok"),//成功
     SERVER_ERROR(500, "internal server error"),//服务器内部错误
     BAD_REQUEST(400, "bad request"),//请求格式错误、参数错误
     UNAUTHORIZED(401, "unauthorized"),//未授权
@@ -22,18 +31,15 @@ public enum StatusCode {
     CONFLICT(409, "conflict"),//资源存在冲突、数据已存在
     DATA_INTEGRITY_VIOLATION_EXCEPTION(424, "data integrity violation exception"),//违背数据完整性、当插入、删除和修改数据的时候，违背的数据完整性约束抛出的异常。例如：主键重复异常、存在外键关联数据依赖等
     ;
-
-    /*状态码*/
-    private int code;
-    /*信息*/
+    private Integer code;
     private String message;
 
-    StatusCode(int code, String message) {
+    ResponseEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
 
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 

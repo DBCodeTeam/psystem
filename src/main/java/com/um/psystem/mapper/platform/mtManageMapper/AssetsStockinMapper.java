@@ -1,7 +1,7 @@
 package com.um.psystem.mapper.platform.mtManageMapper;
 
 /**
- * @Author: zhenjin.zheng
+ * @Author: zzj
  * @Description:
  * @Date: 2020/6/3
  */

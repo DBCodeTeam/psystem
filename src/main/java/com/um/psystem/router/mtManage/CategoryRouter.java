@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * @Author: zhenjin.zheng
+ * @Author: zzj
  * @Description: 物资分类路由
  * @Date: 2020/5/27
  */

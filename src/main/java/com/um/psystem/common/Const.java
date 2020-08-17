@@ -2,7 +2,7 @@ package com.um.psystem.common;
 
 /**
  * 常量类
- * Created by Hao on 2017-03-24.
+ * Created by zzj on 2017-03-24.
  */
 public class Const {
 

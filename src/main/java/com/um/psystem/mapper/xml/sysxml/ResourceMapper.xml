@@ -41,8 +41,8 @@
         left join sys_role_resource rr on rr.resource_id = rs.id
         left join sys_role r on rr.role_id = r.id
         left join sys_user_role ur on ur.role_id = r.id
-        left join sys_user u on ur.user_id = u.id
-        where (u.username = #{username} or u.id = #{username})
+        left join ws_user u on ur.user_id = u.id
+        where (u.name = #{username} or u.id = #{username})
         <if test="type != null and type !=''">
             and rs.type = #{type}
         </if>

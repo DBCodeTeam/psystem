@@ -22,7 +22,15 @@
          where b.dept_name=#{deptName} and a.is_work=1  and b.id is not null
     </select>
 
+    <select id="callProcedure" statementType="CALLABLE" parameterMap="paraMap" resultType="java.lang.Integer">
+        call add_num(?,?,?)
+    </select>
 
+    <parameterMap type="java.util.Map" id="paraMap">
+        <parameter property="a" mode="IN" jdbcType="INTEGER"/>
+        <parameter property="b" mode="IN" jdbcType="INTEGER"/>
+        <parameter property="d" mode="OUT" jdbcType="INTEGER"/>
+    </parameterMap>
 
 
 </mapper>

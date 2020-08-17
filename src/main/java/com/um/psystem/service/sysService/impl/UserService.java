@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zzj on 2020-05-19.
@@ -54,7 +55,6 @@ public class UserService extends BaseService<UserMapper, User> implements IUserS
             existing.setGender(request.getGender());
             existing.setMobile(request.getMobile());
             existing.setName(request.getName());
-            existing.setUpdateTime(new Date());
 
             super.insertOrUpdate(existing);
 
@@ -127,6 +127,11 @@ public class UserService extends BaseService<UserMapper, User> implements IUserS
     }
 
     @Override
+    public List<User> getUserList(Map<String, Object> columnMap) {
+        return baseMapper.selectByMap(columnMap);
+    }
+
+    @Override
     public Page<UserResponse> getUsers(Page<User> page, String roleCode) {
         List<User> users = baseMapper.findUserByRoleCode(page, roleCode);
         page.setRecords(users);
@@ -178,6 +183,6 @@ public class UserService extends BaseService<UserMapper, User> implements IUserS
     }
 
     public User findByUsername(String username){
-        return super.selectOne(new EntityWrapper<User>().eq("username", username));
+        return super.selectOne(new EntityWrapper<User>().eq("loginname", username));
     }
 }

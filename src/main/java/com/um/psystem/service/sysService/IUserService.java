@@ -7,6 +7,7 @@ import com.um.psystem.model.sysModel.response.UserResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zzj on 2020-05-19.
@@ -39,4 +40,6 @@ public interface IUserService extends IBaseService<User> {
     public UserResponse auth(String username, String password);
 
     public List<User> getUsersByRole(String roleCode);
+
+    List<User> getUserList(Map<String,Object> columnMap);
 }

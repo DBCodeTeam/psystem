@@ -1,7 +1,9 @@
 package com.um.psystem.model.sysModel.request;
 
+import lombok.Data;
 import org.hibernate.validator.constraints.NotEmpty;
 
+@Data
 public class UserRequest extends BaseRequest {
 
     /*** 用户名、登录名     */
@@ -21,69 +23,13 @@ public class UserRequest extends BaseRequest {
     /*** 手机号     */
     private String mobile;
 
-    /**
-     * 性别：0=男，1=女
-     */
-    private Integer gender;
+    private String gender;
+
+    private String employeeNum;
 
     /**
-     * 状态：0=启用，1=禁用
+     * 状态：1=启用，0=禁用
      */
     private Integer status;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public Integer getGender() {
-        return gender;
-    }
-
-    public void setGender(Integer gender) {
-        this.gender = gender;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
 }
