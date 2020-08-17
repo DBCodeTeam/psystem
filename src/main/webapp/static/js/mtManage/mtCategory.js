@@ -153,7 +153,7 @@ function queryType() {
 function add() {
     $.getJSON(getRootPath()+"/mtManage/assets/list_dept",function(json) {
         $('#deptInfo').combobox({
-            data: json.body.data, //获取到的json 数据
+            data: json.data, //获取到的json 数据
             valueField:"dept_id",
             textField:"dept_name"
         });
@@ -273,7 +273,7 @@ function edit(id) {
 
     $.getJSON(getRootPath()+"/mtManage/assets/list_dept",function(json) {
         $('#deptInfo').combobox({
-            data: json.body.data, //获取到的json 数据
+            data: json.data, //获取到的json 数据
             valueField:"dept_id",
             textField:"dept_name"
         });

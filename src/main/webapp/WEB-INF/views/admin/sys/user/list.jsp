@@ -22,8 +22,8 @@
         <input id="mobile" class="easyui-textbox" data-options="label:'电话'" style="width:150px;"/>
         <select id="gender" class="easyui-combobox" panelHeight="auto" name="state" label='性别' style="width:120px">
             <option value="">全部</option>
-            <option value="0">男</option>
-            <option value="1">女</option>
+            <option value="男">男</option>
+            <option value="女">女</option>
         </select>
         <a href="javascript:void(0)" onclick="queryUsers()" class="easyui-linkbutton button-blue"
            style="width: 70px;margin-left: 10px;">查&nbsp;询</a>
@@ -76,10 +76,10 @@
                 {field: 'username', title: '用户名', sortable: true, width: 100},
                 {field: 'name', title: '姓名', sortable: true, width: 100},
                 {
-                    field: 'gender', title: '性别', sortable: true,
-                    formatter: function (value, row, index) {
+                    field: 'gender', title: '性别', sortable: true,width:100
+                    /*formatter: function (value, row, index) {
                         return value == 0 ? '男' : '女';
-                    }
+                    }*/
                 },
                 {field: 'email', title: '邮箱', sortable: true, width: 100},
                 {field: 'mobile', title: '电话', sortable: true, width: 100},
@@ -89,11 +89,12 @@
                         var d = "<a onclick='remove(" + row.id + ")' class='button-delete button-red'>删除</a>";
                         var e = "<a onclick='edit(" + row.id + ")' class='button-edit button-blue'>编辑</a>";
                         var r = "<a onclick='getRoles(" + row.id + ")' class='button-edit button-teal'>角色设置</a>";
-                        if (row.isFixed == 1) {//固定的
+                        return r;
+                        /*if (row.isFixed == 1) {//固定的
                             return e + '  ' + r;
                         } else {
                             return e + '  ' + d + '  ' + r;
-                        }
+                        }*/
                     }
                 }
             ]],
@@ -111,13 +112,15 @@
                 }
             },
             onSelect: function (index, row) {
-                if (row.isFixed == 1) {//固定的
+                $('#btn-delete').hide();
+                $('#btn-edit').hide();
+                /*if (row.isFixed == 1) {//固定的
 //                    $('#btn-edit').hide();
                     $('#btn-delete').hide();
                 } else {
 //                    $('#btn-edit').show();
                     $('#btn-delete').show();
-                }
+                }*/
             },
             queryParams: {
                 username: $('#username').val(),

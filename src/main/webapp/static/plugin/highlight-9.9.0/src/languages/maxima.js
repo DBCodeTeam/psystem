@@ -32,7 +32,7 @@ function(hljs) {
       + ' cdf_noncentral_chi2 cdf_noncentral_student_t cdf_normal cdf_pareto cdf_poisson'
       + ' cdf_rank_sum cdf_rayleigh cdf_signed_rank cdf_student_t cdf_weibull cdisplay'
       + ' ceiling central_moment cequal cequalignore cf cfdisrep cfexpand cgeodesic'
-      + ' cgreaterp cgreaterpignore changename changevar chaosgame charat charfun charfun2'
+      + ' cgreaterp cgreaterpignore changename changevar czzjsgame charat charfun charfun2'
       + ' charlist charp charpoly chdir chebyshev_t chebyshev_u checkdiv check_overlaps'
       + ' chinese cholesky christof chromatic_index chromatic_number cint circulant_graph'
       + ' clear_edge_weight clear_rules clear_vertex_label clebsch_gordan clebsch_graph'

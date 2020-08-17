@@ -12,7 +12,22 @@
     <title>物资申请管理</title>
 
     <%@ include file="/WEB-INF/views/include/common.jsp" %>
+    <style>
+        #form_apply tr {
+              line-height: 35px;
+              margin-bottom: 4px;
+          }
 
+        #form_apply tr input, #form_apply select,#form_apply a {
+            width: 144px;
+        }
+        .combo, .textbox{
+            border: 1px solid #b9b8b8;
+        }
+    </style>
+    <script>
+        var username= "${user.username}";
+    </script>
 </head>
 
 <body>
@@ -33,303 +48,285 @@
         <table id="dg" style="width:100%;height:100%;">
         </table>
         <div id="tb" style="padding:2px 5px;">
-            <a href="javascript:void(0)" onclick="add()" class="easyui-linkbutton" iconCls="icon-add"
+            <a href="javascript:void(0)" onclick="add_apply()" class="easyui-linkbutton" iconCls="icon-add"
                plain="true">添加</a>
-            <a id="btn-edit" href="javascript:void(0)" onclick="edit()" class="easyui-linkbutton" iconCls="icon-edit"
+            <a id="btn-edit" href="javascript:void(0)" onclick="edit_apply()" class="easyui-linkbutton" iconCls="icon-edit"
                plain="true">编辑</a>
             <a id="btn-delete" href="javascript:void(0)" onclick="remove()" class="easyui-linkbutton"
                iconCls="icon-remove"
                plain="true">删除</a>
-            <a href="javascript:void(0)" onclick="getRoles()" class="easyui-linkbutton" iconCls="icon-user-config"
-               plain="true">角色设置</a>
+            <a href="javascript:void(0)" onclick="getFlow()" class="easyui-linkbutton" iconCls="icon-user-config"
+               plain="true">流程配置</a>
             <%--<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true">保存</a>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cut" plain="true">剪切</a>--%>
 
         </div>
     </div>
 </div>
-<div id="dlg"></div>
-<script>
-    var datagrid;
-    var dialog;
-    $(function () {
-        datagrid = $('#dg').datagrid({
-            method: "get",
-            url: '${ctx}/sys/user/page',
-            fit: true,
-            fitColumns: true,
-            border: true,
-            idField: 'id',
-            striped: true,
-            pagination: true,
-            rownumbers: true,
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [10, 20, 30, 50, 100],
-            singleSelect: true,
-            selectOnCheck: true,
-            checkOnSelect: true,
-            toolbar: '#tb',
-            columns: [[
-                {field: 'ck', checkbox: true},
-                {field: 'id', title: 'id', hidden: true},
-                {field: 'username', title: '用户名', sortable: true, width: 100},
-                {field: 'name', title: '姓名', sortable: true, width: 100},
-                {
-                    field: 'gender', title: '性别', sortable: true,
-                    formatter: function (value, row, index) {
-                        return value == 0 ? '男' : '女';
-                    }
-                },
-                {field: 'email', title: '邮箱', sortable: true, width: 100},
-                {field: 'mobile', title: '电话', sortable: true, width: 100},
-                {
-                    field: 'operate', title: '操作', width: 100,
-                    formatter: function (value, row, index) {
-                        var d = "<a onclick='remove(" + row.id + ")' class='button-delete button-red'>删除</a>";
-                        var e = "<a onclick='edit(" + row.id + ")' class='button-edit button-blue'>编辑</a>";
-                        var r = "<a onclick='getRoles(" + row.id + ")' class='button-edit button-teal'>角色设置</a>";
-                        if (row.isFixed == 1) {//固定的
-                            return e + '  ' + r;
-                        } else {
-                            return e + '  ' + d + '  ' + r;
-                        }
-                    }
-                }
-            ]],
-            onLoadSuccess: function (data) {
-                $('.button-delete').linkbutton({});
-                $('.button-edit').linkbutton({});
+<div id="dlg"> <%--流程--%>
+    <div data-options="region:'center',border:false" style="height:100%">
+        <table id="flow-dg" style="width:100%;height:100%;">
+        </table>
+        <div id="bar-flow" style="padding:2px 5px;">
+            <a href="javascript:void(0)" onclick="add_flow()" class="easyui-linkbutton" iconCls="icon-add"
+               plain="true">添加</a>
+            <a id="btn-flow-edit" href="javascript:void(0)" onclick="edit_flow()" class="easyui-linkbutton" iconCls="icon-edit"
+               plain="true">编辑</a>
+            <a id="btn-flow-delete" href="javascript:void(0)" onclick="remove_flow()" class="easyui-linkbutton"
+               iconCls="icon-remove"
+               plain="true">删除</a>
+            <a href="javascript:void(0)" onclick="getOperator()" class="easyui-linkbutton"
+               iconCls="icon-user-config"
+               plain="true">操作员配置</a>
+        </div>
+    </div>
+</div>
 
-                if (data) {
-                    $.each(data.rows,
-                        function (index, item) {
-                            if (item.checked) {
-                                $('#dg').datagrid('checkRow', index);
-                            }
-                        });
-                }
-            },
-            onSelect: function (index, row) {
-                if (row.isFixed == 1) {//固定的
-//                    $('#btn-edit').hide();
-                    $('#btn-delete').hide();
-                } else {
-//                    $('#btn-edit').show();
-                    $('#btn-delete').show();
-                }
-            },
-            queryParams: {
-                username: $('#username').val(),
-                mobile: $('#mobile').val(),
-                gender: $('#gender').val()
-            }
-        });
-    });
+<div id="dlg_assets"> <%--物资--%>
+    <div data-options="region:'center',border:false" style="height:100%">
+        <table id="assets-dg" style="width:100%;height:100%;">
+        </table>
+    </div>
+</div>
 
-    function queryUsers() {
-        $(datagrid).datagrid('load', {
-                username: $('#username').val(),
-                mobile: $('#mobile').val(),
-                gender: $('#gender').val()
-            }
-        );
-    }
+<div id="dlg_operator"> <%--操作员配置--%>
+    <div data-options="region:'center',border:false" style="height:100%">
+        <table id="operator-dg" style="width:100%;height:100%;">
+        </table>
+        <div id="bar-operator" style="padding:2px 5px;">
+            <a href="javascript:void(0)" onclick="add_operator()" class="easyui-linkbutton" iconCls="icon-add"
+               plain="true">添加</a>
+            <a id="btn-operator-edit" href="javascript:void(0)" onclick="edit_operator()" class="easyui-linkbutton" iconCls="icon-edit"
+               plain="true">编辑</a>
+            <a id="btn-operator-delete" href="javascript:void(0)" onclick="remove_operator()" class="easyui-linkbutton"
+               iconCls="icon-remove"
+               plain="true">删除</a>
+        </div>
+    </div>
+</div>
+<div id="dlg_operator_form">
+    <div class="easyui-layout" data-options="fit:true,border:false">
+        <div data-options="region:'center',border:false" style="height:100%;">
+            <form id="form_operator">
+                <table style="margin: 0 auto; padding: 10px;">
+                    <tr>
+                        <td align="right">部门:</td>
+                        <td>
+                            <input  id="deptInfo" name="deptInfo" class="easyui-combobox" data-options="valueField: 'dept_id', textField: 'dept_name'"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">节点信息:</td>
+                        <td>
+                            <input id="operator_info" name="operator_info" class="easyui-textbox" data-options="required:true"/>
+                            <input id="operator_node" name="operator_node" type="hidden"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">序号:</td>
+                        <td><input id="sequence" name="sequence" class="easyui-numberspinner" value="0" data-options="spinAlign:'right'"/></td>
+                    </tr>
+                    <tr>
+                        <td align="right">操作员:</td>
+                        <td>
+                            <input  id="userInfo" name="userInfo" class="easyui-combobox" data-options="valueField: 'user_id', textField: 'user_name'"/>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
 
-    function add() {
-        dialog = $("#dlg").dialog({
-            title: '添加用户',
-            width: 340,
-            height: 360,
-            href: '${ctx}/admin/user/add',
-            maximizable: false,
-            modal: true,
-            buttons: [{
-                text: '确认',
-                iconCls: 'icon-ok',
-                handler: function () {
-                    var isValid = $("#form").form('validate');
-                    if (isValid) {
-                        U.post({
-                            url: "${ctx}/sys/user/add",
-                            loading: true,
-                            data: $('#form').serialize(),
-                            success: function (data) {
-                                if (data.code == 200) {
-                                    U.msg('添加成功');
-                                    dialog.dialog('close');
-                                    queryUsers();
-                                } else if (data.code == 400) {//参数验证失败
-                                    U.msg('参数验证失败');
-                                } else if (data.code == 409) {
-                                    U.msg('用户已存在');
-                                } else {
-                                    U.msg('服务器异常');
-                                }
-                            }
-                        });
-                    }
-                }
-            }, {
-                text: '取消',
-                handler: function () {
-                    dialog.dialog('close');
-                }
-            }]
-        });
-    }
+<div id="dlg_flow_form">
+    <div class="easyui-layout" data-options="fit:true,border:false">
+        <div data-options="region:'center',border:false" style="height:100%;">
+            <form id="form_flow">
+                <table style="margin: 0 auto; padding: 10px;">
+                    <tr>
+                        <td align="right">模板名称:</td>
+                        <td>
+                            <input id="model_name" name="model_name" class="easyui-textbox" data-options="required:true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">节点名称:</td>
+                        <td>
+                            <input id="node_name" name="node_name" class="easyui-textbox" data-options="required:true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">节点序号:</td>
+                        <td>
+                            <input id="node_seq" name="node_seq" class="easyui-textbox" data-options="required:true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">转向节点序号:</td>
+                        <td>
+                            <input id="turn_node_seq" name="turn_node_seq" class="easyui-textbox" data-options="required:true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">是否并行操作:</td>
+                        <td>
+                            <select name="serial_flag" class="easyui-combobox" panelHeight="auto">
+                                <option value="1">是</option>
+                                <option value="0">否</option>
+                            </select>
+                        </td>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
 
-    function edit(id) {
-        if (id == null) {
-            var row = datagrid.datagrid('getSelected');
-            if (row == null) {
-                U.msg('请先选择用户');
-                return
-            } else {
-                id = row.id;
-            }
-        }
+<div id="dlg_apply_form">
+    <div class="easyui-layout" data-options="fit:true,border:false">
+        <div data-options="region:'center',border:false" style="width:100%;height:100%;">
+            <form id="form_apply">
+                <table style="margin: 0 auto; padding: 10px;">
+                    <tr>
+                        <td align="right">ERP:</td>
+                        <td>
+                            <input  id="erpInfo" name="erpInfo" class="easyui-combobox" data-options="valueField: 'conErpNo', textField: 'conErpNo'"/>
+                        </td>
+                        <td align="right">机型:</td>
+                        <td>
+                            <input id="conProductNum" name="conProductNum" class="easyui-textbox" />
+                        </td>
+                        <td align="right">部门:</td>
+                        <td>
+                            <input id="conDept" name="conDept" class="easyui-textbox" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">数量:</td>
+                        <td>
+                            <input  id="sdOrderAmount" name="sdOrderAmount" class="easyui-textbox"/>
+                        </td>
+                        <td align="right">客户:</td>
+                        <td>
+                            <input id="cusSentToName" name="cusSentToName" class="easyui-textbox" />
+                        </td>
+                        <td align="right">选择:</td>
+                        <td>
+                            <a href="javascript:void(0)" onclick="getAssets()" class="easyui-linkbutton button-default">选择物资</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">物资部门:</td>
+                        <td>
+                            <input id="dept_name" name="dept_name" class="easyui-textbox" data-options="required:true"/>
+                        </td>
+                        <td align="right">物资类别:</td>
+                        <td>
+                            <input id="type_main_name" name="type_main_name" class="easyui-textbox" data-options="required:true"/>
+                        </td>
+                        <td align="right">物资名称:</td>
+                        <td>
+                            <input id="type_dtl_name" name="type_dtl_name" class="easyui-textbox" data-options="required:true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">物资编号:</td>
+                        <td>
+                            <input id="type_dtl_no" name="type_dtl_no" class="easyui-textbox" data-options="required:true"/>
+                            <input id="assets_id" name="assets_id" type="hidden"/>
+                        </td>
+                        <td align="right">型号:</td>
+                        <td>
+                            <input id="model" name="model" class="easyui-textbox" data-options="required:true"/>
+                        </td>
+                        <td align="right">规格:</td>
+                        <td>
+                            <input id="sizes" name="sizes" class="easyui-textbox" data-options="required:true"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">出库类型:</td>
+                        <td>
+                            <select name="out_type" class="easyui-combobox" panelHeight="auto" style="width:144px;">
+                                <option value="借用出库">借用出库</option>
+                                <option value="永久出库">永久出库</option>
+                            </select>
+                        </td>
+                        <td align="right">预计归还:</td>
+                        <td>
+                            <input id="return_plandate" name="return_plandate" type= "text" class= "easyui-datebox"/>
+                        </td>
+                        <td align="right">申请数量:</td>
+                        <td>
+                            <input id="apply_num" name="apply_num" class="easyui-textbox" data-options="required:true"/>
+                            <input id="apply_id" name="apply_id" type="hidden"/>
+                        </td>
+                    </tr>
 
-        dialog = $("#dlg").dialog({
-            title: '编辑用户',
-            width: 380,
-            height: 300,
-            href: '${ctx}/admin/user/edit/' + id,
-            maximizable: false,
-            modal: true,
-            buttons: [{
-                text: '确认',
-                iconCls: 'icon-ok',
-                handler: function () {
-                    var isValid = $("#form").form('validate');
-                    if (isValid) {
-                        U.post({
-                            url: "${ctx}/sys/user/update",
-                            loading: true,
-                            data: $('#form').serialize(),
-                            success: function (data) {
-                                if (data.code == 200) {
-                                    U.msg('修改成功');
-                                    dialog.dialog('close');
-                                    queryUsers();
-                                } else if (data.code == 400) {//参数验证失败
-                                    U.msg('参数验证失败');
-                                } else if (data.code == 404) {
-                                    U.msg('未找到该用户');
-                                } else {
-                                    U.msg('服务器异常');
-                                }
-                            }
-                        });
-                    }
-                }
-            }, {
-                text: '取消',
-                handler: function () {
-                    dialog.dialog('close');
-                }
-            }]
-        });
-    }
+                    <tr>
+                        <td align="right">申请人:</td>
+                        <td>
+                            <input id="apply_man" name="apply_man" class="easyui-textbox" value="${user.username}" />
+                        </td>
+                        <td id="apply_time_span" align="right">申请时间:</td>
+                        <td id="apply_time_td">
+                            <input id="apply_time" name="apply_time" class="easyui-textbox" />
+                        </td>
+                        <td id="currentuser_span" align="right">审核人:</td>
+                        <td id="currentuser_td">
+                            <input id="currentuser" name="currentuser" class="easyui-textbox" data-options="readonly:true"/>
+                        </td>
+                    </tr>
 
-    function remove(id) {
-        if (id == null) {
-            var row = datagrid.datagrid('getSelected');
-            if (row == null) {
-                U.msg('请先选择用户');
-                return
-            } else {
-                id = row.id;
-            }
-        }
+                    <tr>
+                        <td id="backto_user_span" align="right">打回人:</td>
+                        <td id="backto_user_td">
+                            <input id="backto_user" name="backto_user" class="easyui-textbox" />
+                        </td>
+                        <td id="backto_time_span" align="right">打回时间:</td>
+                        <td id="backto_time_td">
+                            <input id="backto_time" name="backto_time" class="easyui-textbox" data-options="readonly:true"/>
+                        </td>
+                    </tr>
 
-        parent.$.messager.confirm('提示', '删除后无法恢复您确定要删除？', function (data) {
-            if (data) {
-                U.post({
-                    url: "${ctx}/sys/user/delete",
-                    loading: true,
-                    data: {id: id},
-                    success: function (data) {
-                        if (data.code == 200) {
-                            U.msg('删除成功');
-                            queryUsers();
-                        } else if (data.code == 400) {//参数验证失败
-                            U.msg('参数验证失败');
-                        } else if (data.code == 404) {
-                            U.msg('未找到该用户');
-                        } else {
-                            U.msg('服务器异常');
-                        }
-                    }
-                });
-            }
-        });
-    }
+                    <tr>
+                        <td id="besureout_user_span" align="right">发放人:</td>
+                        <td id="besureout_user_td">
+                            <input id="besureout_user" name="besureout_user" class="easyui-textbox" />
+                        </td>
+                        <td id="besureout_time_span" align="right">发放时间:</td>
+                        <td id="besureout_time_td">
+                            <input id="besureout_time" name="besureout_time" class="easyui-textbox" data-options="readonly:true"/>
+                        </td>
+                    </tr>
 
-    function getRoles(id) {
-        if (U.isEmpty(id)) {
-            var row = datagrid.datagrid('getSelected');
-            if (row == null) {
-                U.msg('请先选择用户');
-                return
-            } else {
-                id = row.id;
-            }
-        }
+                    <tr>
+                        <td id="refusereason_user_span" align="right">拒绝发放人:</td>
+                        <td id="refusereason_user_td">
+                            <input id="refusereason_user" name="refusereason_user" class="easyui-textbox" data-options="readonly:true"/>
+                        </td>
+                        <td id="refusereason_span" align="right">拒绝原因:</td>
+                        <td id="refusereason_td">
+                            <input id="refusereason" name="refusereason" class="easyui-textbox" />
+                        </td>
+                        <td id="refusereason_time_span" align="right">拒绝时间:</td>
+                        <td id="refusereason_time_td">
+                            <input id="refusereason_time" name="refusereason_time" class="easyui-textbox" data-options="readonly:true"/>
+                        </td>
+                    </tr>
 
-        dialog = $("#dlg").dialog({
-            title: '用户角色管理',
-            width: 600,
-            height: 400,
-            href: '${ctx}/admin/user/' + id + '/role',
-            maximizable: false,
-            modal: true,
-            buttons: [{
-                text: '确认',
-                iconCls: 'icon-ok',
-                handler: function () {
-                    U.post({
-                        url: '${ctx}/sys/user/' + id + '/role/modify',
-                        loading: true,
-                        data: {
-                            roles: getSelectedRoles()
-                        },
-                        success: function (data) {
-                            if (data.code == 200) {
-                                U.msg('修改成功');
-                                dialog.dialog('close');
-                                queryUsers();
-                            } else if (data.code == 400) {//参数验证失败
-                                U.msg('参数验证失败');
-                            } else if (data.code == 404) {
-                                U.msg('未找到该用户');
-                            } else {
-                                U.msg('服务器异常');
-                            }
-                        }
-                    });
-                }
-            }, {
-                text: '取消',
-                handler: function () {
-                    dialog.dialog('close');
-                }
-            }]
-        });
-    }
-
-    //保存用户角色
-    function getSelectedRoles() {
-
-        //所选的角色列表
-        var roleIds = [];
-        var data = $('#role-dg').datagrid('getSelections');
-        for (var i = 0, j = data.length; i < j; i++) {
-            roleIds.push(data[i].id);
-        }
-        return roleIds;
-    }
-
-</script>
+                    <tr>
+                        <td colspan="1">操作记录:</td>
+                        <td colspan="5">
+                            <input id="operator_record" name="operator_record" class="easyui-textbox" style="width:544px;height:60px;" data-options="multiline:true,readonly:true" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
+<script src="${ctxstatic}/js/mtManage/assetsApply.js" type="text/javascript"></script>
 </html>

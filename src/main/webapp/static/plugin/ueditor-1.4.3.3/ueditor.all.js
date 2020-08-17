@@ -17490,7 +17490,7 @@ UE.plugins['autoheight'] = function () {
 ///commandsName  AutoFloat,autoFloatEnabled
 ///commandsTitle  悬浮工具栏
 /**
- *  modified by chengchao01
+ *  modified by chengczzj01
  *  注意： 引入此功能后，在IE6下会将body的背景图片覆盖掉！
  */
 UE.plugins['autofloat'] = function() {

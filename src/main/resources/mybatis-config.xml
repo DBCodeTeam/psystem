@@ -23,8 +23,9 @@
 		<setting name="useColumnLabel" value="true" />
 		<setting name="defaultExecutorType" value="REUSE" />
 		<setting name="defaultStatementTimeout" value="25000" />
+		<setting name="callSettersOnNulls" value="true"/>
 	</settings>
-	
+
 	<!-- 查询对象别名配置 -->
 	<typeAliases>
 		<!-- 
