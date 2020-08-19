@@ -1,0 +1,13 @@
+.applytoolbar{
+    margin: 0 auto;
+    border-bottom:1px solid #a7a4a4;
+    text-align: right;
+}
+
+.applytoolbar .panel {
+    overflow: hidden;
+    text-align: right;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+}

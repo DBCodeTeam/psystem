@@ -26,33 +26,45 @@
 
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false,minWidth:560">
-    <div data-options="region:'west',border:false" style="height:100%;width: 45%;">
-        <%--<div id="rtb" style="height: 30px;">
-        </div>--%>
-        <div id="tb_category" style="padding:2px 5px;">
-            <a id="btn-category-add" href="javascript:void(0)" onclick="add()" class="easyui-linkbutton" iconCls="icon-add"
-               plain="true">添加</a>
-            <a id="btn-category-edit" href="javascript:void(0)" onclick="edit()" class="easyui-linkbutton" iconCls="icon-edit"
-               plain="true">编辑</a>
-            <a id="btn-category-delete" href="javascript:void(0)" onclick="remove()" class="easyui-linkbutton"
-               iconCls="icon-remove"
-               plain="true">删除</a>
+    <div data-options="region:'west',border:true" style="height:100%;width: 45%;">
+        <div data-options="region:'north',border:true" style="padding: 10px 5px;">
+            <input id="typeMain" class="easyui-textbox" data-options="label:'分类名称'" style="width:160px;"/>
+            <a href="javascript:void(0)" onclick="queryType()" class="easyui-linkbutton button-blue"
+               style="width: 70px;margin-left: 10px;">查&nbsp;询</a>
         </div>
-        <table id="mdg_main" style="width:100%;height:100%;">
-        </table>
+        <div data-options="region:'south',border:false" style="height:90%;width: 100%;">
+            <div id="tb_category" style="padding:2px 5px;">
+                <a id="btn-category-add" href="javascript:void(0)" onclick="add()" class="easyui-linkbutton" iconCls="icon-add"
+                   plain="true">添加</a>
+                <a id="btn-category-edit" href="javascript:void(0)" onclick="edit()" class="easyui-linkbutton" iconCls="icon-edit"
+                   plain="true">编辑</a>
+                <a id="btn-category-delete" href="javascript:void(0)" onclick="remove()" class="easyui-linkbutton"
+                   iconCls="icon-remove"
+                   plain="true">删除</a>
+            </div>
+            <table id="mdg_main" style="width:100%;height:100%;">
+            </table>
+        </div>
     </div>
-    <div data-options="region:'center',border:false" style="height:100%">
-        <div id="tb_detail" style="padding:2px 5px;">
-            <a href="javascript:void(0)" onclick="add_dtl()" class="easyui-linkbutton" iconCls="icon-add"
-               plain="true">添加</a>
-            <a id="btn-detail-edit" href="javascript:void(0)" onclick="edit_dtl()" class="easyui-linkbutton" iconCls="icon-edit"
-               plain="true">编辑</a>
-            <a id="btn-detail-delete" href="javascript:void(0)" onclick="remove_dtl()" class="easyui-linkbutton"
-               iconCls="icon-remove"
-               plain="true">删除</a>
+    <div data-options="region:'center',border:true" style="height:100%">
+        <div data-options="region:'north',border:false" style="padding: 10px 5px;">
+            <input id="dtlName" class="easyui-textbox" data-options="label:'物资名称'" style="width:160px;"/>
+            <a href="javascript:void(0)" onclick="queryDtl()" class="easyui-linkbutton button-blue"
+               style="width: 70px;margin-left: 10px;">查&nbsp;询</a>
         </div>
-        <table id="mdg_detail" style="width:100%;height:100%;">
-        </table>
+        <div data-options="region:'south',border:false" style="height:90%;width: 100%;">
+            <div id="tb_detail" style="padding:2px 5px;">
+                <a href="javascript:void(0)" onclick="add_dtl()" class="easyui-linkbutton" iconCls="icon-add"
+                   plain="true">添加</a>
+                <a id="btn-detail-edit" href="javascript:void(0)" onclick="edit_dtl()" class="easyui-linkbutton" iconCls="icon-edit"
+                   plain="true">编辑</a>
+                <a id="btn-detail-delete" href="javascript:void(0)" onclick="remove_dtl()" class="easyui-linkbutton"
+                   iconCls="icon-remove"
+                   plain="true">删除</a>
+            </div>
+            <table id="mdg_detail" style="width:100%;height:100%;">
+            </table>
+        </div>
     </div>
 
 

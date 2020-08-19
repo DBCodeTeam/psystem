@@ -10,6 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta content="always" name="referrer">
     <title>物资申请管理</title>
+    <link href="${ctxstatic}/css/custom-style.css" rel="stylesheet" type="text/css">
 
     <%@ include file="/WEB-INF/views/include/common.jsp" %>
     <style>
@@ -33,14 +34,14 @@
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false,minWidth:560">
     <div data-options="region:'north',border:false" style="padding: 10px 5px;">
-        <input id="username" class="easyui-textbox" data-options="label:'用户名'" style="width:160px;"/>
-        <input id="mobile" class="easyui-textbox" data-options="label:'电话'" style="width:150px;"/>
-        <select id="gender" class="easyui-combobox" panelHeight="auto" name="state" label='性别' style="width:120px">
+        <input id="erp_no_s" class="easyui-textbox" data-options="label:'ERP'" style="width:160px;"/>
+        <input id="apply_man_s" class="easyui-textbox" data-options="label:'申请人'" style="width:150px;"/>
+        <select id="state_s" class="easyui-combobox" panelHeight="auto" name="state" label='状态' style="width:120px">
             <option value="">全部</option>
-            <option value="0">男</option>
-            <option value="1">女</option>
+            <option value="审核">审核</option>
+            <option value="已审核">已审核</option>
         </select>
-        <a href="javascript:void(0)" onclick="queryUsers()" class="easyui-linkbutton button-blue"
+        <a href="javascript:void(0)" onclick="queryApply()" class="easyui-linkbutton button-blue"
            style="width: 70px;margin-left: 10px;">查&nbsp;询</a>
     </div>
 
@@ -52,7 +53,7 @@
                plain="true">添加</a>
             <a id="btn-edit" href="javascript:void(0)" onclick="edit_apply()" class="easyui-linkbutton" iconCls="icon-edit"
                plain="true">编辑</a>
-            <a id="btn-delete" href="javascript:void(0)" onclick="remove()" class="easyui-linkbutton"
+            <a id="btn-delete" href="javascript:void(0)" onclick="remove_apply" class="easyui-linkbutton"
                iconCls="icon-remove"
                plain="true">删除</a>
             <a href="javascript:void(0)" onclick="getFlow()" class="easyui-linkbutton" iconCls="icon-user-config"
@@ -184,8 +185,14 @@
 </div>
 
 <div id="dlg_apply_form">
-    <div class="easyui-layout" data-options="fit:true,border:false">
-        <div data-options="region:'center',border:false" style="width:100%;height:100%;">
+    <div class="easyui-layout" data-options="fit:true,border:false" >
+
+        <div data-options="region:'center',border:false" style="width:100%;height:100%;" toolbar="#dlg-toolbar">
+            <!--创建Toolbar-->
+            <div id="dlg-toolbar" class="applytoolbar">
+                <a  id="printBill" href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="printBill()">打印</a>
+                <a  href="#" class="easyui-linkbutton" iconcls="icon-help" plain="true">Help</a>
+            </div>
             <form id="form_apply">
                 <table style="margin: 0 auto; padding: 10px;">
                     <tr>
@@ -267,7 +274,7 @@
                     <tr>
                         <td align="right">申请人:</td>
                         <td>
-                            <input id="apply_man" name="apply_man" class="easyui-textbox" value="${user.username}" />
+                            <input id="apply_man" name="apply_man" class="easyui-textbox" value="${user.username}" data-options="readonly:true"/>
                         </td>
                         <td id="apply_time_span" align="right">申请时间:</td>
                         <td id="apply_time_td">
@@ -280,14 +287,30 @@
                     </tr>
 
                     <tr>
-                        <td id="backto_user_span" align="right">打回人:</td>
-                        <td id="backto_user_td">
-                            <input id="backto_user" name="backto_user" class="easyui-textbox" />
+                        <td id="demand_time_span" align="right">需求时间:</td>
+                        <td id="demand_time_td">
+                            <input id="demand_time" name="demand_time" class="easyui-datebox" />
                         </td>
+                        <td id="stock_num_span" align="right">库存数量:</td>
+                        <td id="stock_num_td">
+                            <input id="stock_num" name="stock_num" class="easyui-textbox" />
+                        </td>
+                        <td id="apply_reason_span" align="right">申请原因:</td>
+                        <td id="apply_reason_td">
+                            <input id="apply_reason" name="apply_reason" class="easyui-textbox" />
+                        </td>
+                    </tr>
+
+                    <tr>
                         <td id="backto_time_span" align="right">打回时间:</td>
                         <td id="backto_time_td">
                             <input id="backto_time" name="backto_time" class="easyui-textbox" data-options="readonly:true"/>
                         </td>
+                        <td id="backto_user_span" align="right">打回人:</td>
+                        <td id="backto_user_td">
+                            <input id="backto_user" name="backto_user" class="easyui-textbox" />
+                        </td>
+
                     </tr>
 
                     <tr>

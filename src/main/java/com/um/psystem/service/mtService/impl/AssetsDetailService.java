@@ -1,5 +1,6 @@
 package com.um.psystem.service.mtService.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.um.psystem.entity.mtEntity.AssetsDetail;
 import com.um.psystem.entity.mtEntity.AssetsType;
@@ -48,7 +49,14 @@ public class AssetsDetailService implements IAssetsDetailService {
 
     @Override
     public List<AssetsDetail> getAssetsDetails(Map<String, Object> columnMap) {
-        List<AssetsDetail> assetsDetailList =  assetsDetailMapper.selectByMap(columnMap);
+        EntityWrapper<AssetsDetail> ew = new EntityWrapper<AssetsDetail>();
+        if(StrUtil.isNotBlank(columnMap.get("type_main_id")!=null?columnMap.get("type_main_id").toString():null)){
+            ew.eq("type_main_id",columnMap.get("type_main_id").toString());
+        }
+        if(StrUtil.isNotBlank(columnMap.get("type_dtl_name")!=null?columnMap.get("type_dtl_name").toString():null)){
+            ew.like("type_dtl_name",columnMap.get("type_dtl_name").toString());
+        }
+        List<AssetsDetail> assetsDetailList =  assetsDetailMapper.selectList(ew);
         return assetsDetailList;
     }
 }

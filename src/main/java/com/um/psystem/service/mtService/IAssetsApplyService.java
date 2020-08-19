@@ -51,4 +51,8 @@ public interface IAssetsApplyService {
 
      JsonResult<Integer> issue_apply(HttpServletRequest request, Map map);
 
+     JsonResult<Integer> update_apply(Map map);
+
+    JsonResult<Integer> del_apply(Map map);
+
 }

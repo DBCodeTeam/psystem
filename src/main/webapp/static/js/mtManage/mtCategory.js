@@ -4,7 +4,7 @@ var dialogMain;
 var dialogDetail;
 $(function () {
         datagridMain = $('#mdg_main').datagrid({
-            method: "get",
+            method: "post",
             url: getRootPath()+'/mtManage/assets/list_MainGrid',
             fit: true,
             fitColumns: true,
@@ -49,6 +49,9 @@ $(function () {
                 getAssetsDtl();
 //              $('#btn-edit').show();
                 $('#btn-category-delete').show();
+            },
+            queryParams: {
+                "typeMainName":''
             }
         });
     });
@@ -62,8 +65,7 @@ function getAssetsDtl(){
         datagridDetail = $('#mdg_detail').datagrid({
             method: "post",
             url: getRootPath()+'/mtManage/assets/list_DetailGrid',
-            fit: true,
-            fitColumns: true,
+            //fit: true,
             border: true,
             idField: 'typeDtlId',
             striped: true,
@@ -79,13 +81,16 @@ function getAssetsDtl(){
             columns: [[
                 {field: 'ck', checkbox: true},
                 {field: 'typeDtlId', title: 'id', hidden: true},
-                {field: 'typeDtlName', title: '物资名称', sortable: false, width: 20},
-                {field: 'typeDtlNo', title: '物资编号', sortable: false, width: 20},
-                {field: 'model', title: '型号', sortable: false, width: 30},
-                {field: 'sizes', title: '规格', sortable: false, width: 30},
-                {field: 'remark', title: '备注', sortable: false, width: 25},
+                {field: 'typeDtlName', title: '物资名称', sortable: false, width: 80},
+                {field: 'typeDtlNo', title: '物资编号', sortable: false, width: 80},
+                {field: 'model', title: '型号', sortable: false, width: 80},
+                {field: 'sizes', title: '规格', sortable: false, width: 80},
+                {field: 'user_to', title: '用途', sortable: false, width: 80},
+                {field: 'k3_code', title: 'k3编码', sortable: false, width: 80},
+                {field: 'brand_name', title: '品牌', sortable: false, width: 80},
+                {field: 'remark', title: '备注', sortable: false, width: 80},
                 {
-                    field: 'operate', title: '操作', width: 42,
+                    field: 'operate', title: '操作', width: 100,
                     formatter: function (value, row, index) {
                         var d = "<a onclick='remove_dtl(" + row.typeDtlId + ")' class='button-delete button-red'>删除</a>";
                         var e = "<a onclick='edit_dtl(" + row.typeDtlId + ")' class='button-edit button-blue'>编辑</a>";
@@ -101,6 +106,7 @@ function getAssetsDtl(){
 
             },
             queryParams: {
+                "typeDtlName":'',
                 "typeMainId":row.typeMainId
             }
         });
@@ -138,10 +144,21 @@ function getFormJson(form,filterName,addName) {
     return o;
 }
 
-function queryType() {
-    $(datagridMain).datagrid('load', {
 
+function queryType() {
+    console.log($("#typeMain").val());
+    $(datagridMain).datagrid('load', {
+        "typeMainName":$("#typeMain").val()
       }
+    );
+}
+
+function queryDtl() {
+    var row = datagridMain.datagrid('getSelected');
+    $(datagridDetail).datagrid('load', {
+            "typeMainId":row.typeMainId,
+            "typeDtlName":$("#dtlName").val()
+        }
     );
 }
 

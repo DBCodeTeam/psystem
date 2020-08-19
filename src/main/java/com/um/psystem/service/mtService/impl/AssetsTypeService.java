@@ -1,5 +1,6 @@
 package com.um.psystem.service.mtService.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.um.psystem.entity.mtEntity.AssetsType;
 import com.um.psystem.mapper.platform.mtManageMapper.AssetsTypeMapper;
@@ -8,6 +9,7 @@ import com.um.psystem.service.mtService.IAssetsTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +50,11 @@ public class AssetsTypeService implements IAssetsTypeService {
 
     @Override
     public List<AssetsType> getAssetsTypes(Map<String,Object> columnMap) {
-        List<AssetsType> assetsTypeList =  manageMapper.selectByMap(columnMap);
+        EntityWrapper<AssetsType> ew = new EntityWrapper<AssetsType>();
+        if(StrUtil.isNotBlank(columnMap.get("typeMainName")!=null?columnMap.get("typeMainName").toString():null)){
+            ew.like("type_main_name",columnMap.get("typeMainName").toString());
+        }
+        List<AssetsType> assetsTypeList =  manageMapper.selectList(ew);
         return assetsTypeList;
     }
 

@@ -71,10 +71,10 @@ public class AssetsManageController extends BaseController {
      * 物资一级分类列表(分页)
      * @return
      */
-    @RequestMapping(value="/list_MainGrid",method = RequestMethod.GET)
+    @RequestMapping(value="/list_MainGrid",method = RequestMethod.POST)
     @ResponseBody
-    public DataGrid getMainGrid(){
-      List<AssetsType> assetsTypeList = iMtAssetsService.getAssetsTypes(null);
+    public DataGrid getMainGrid(@RequestParam Map map){
+      List<AssetsType> assetsTypeList = iMtAssetsService.getAssetsTypes(map);
       return buildDataGrid(assetsTypeList,assetsTypeList.size());
     }
 
@@ -85,10 +85,13 @@ public class AssetsManageController extends BaseController {
      */
     @RequestMapping(value="/list_DetailGrid",method = RequestMethod.POST)
     @ResponseBody
-    public DataGrid getDetailGrid(@RequestParam("typeMainId")String typeMainId){
+    public DataGrid getDetailGrid(@RequestParam("typeMainId")String typeMainId,@RequestParam("typeDtlName")String typeDtlName){
         Map<String,Object> modelMap = new HashMap();
         if(StrUtil.isNotBlank(typeMainId)){
             modelMap.put("type_main_id",typeMainId);
+        }
+        if(StrUtil.isNotBlank(typeMainId)){
+            modelMap.put("type_dtl_name",typeDtlName);
         }
         List<AssetsDetail> assetsDetailList = iAssetsDetailService.getAssetsDetails(modelMap);
         return buildDataGrid(assetsDetailList,assetsDetailList.size());
@@ -115,7 +118,11 @@ public class AssetsManageController extends BaseController {
     @ResponseBody
     public DataGrid getApplyGrid(@RequestParam Map map){
         List<Map<String,Object>> apply_list = iAssetsApplyService.getApplyList(map);
-        return buildDataGrid(apply_list,Integer.parseInt(apply_list.get(0).get("totals").toString()));
+        System.out.println(apply_list.size());
+        int count=0;
+        if(apply_list!=null && apply_list.size()>0)
+        count =Integer.parseInt(apply_list.get(0).get("totals").toString());
+        return buildDataGrid(apply_list,count);
     }
 
     /**
@@ -175,6 +182,27 @@ public class AssetsManageController extends BaseController {
     @ResponseBody
     public JsonResult addApply(@RequestParam Map map){
         return iAssetsApplyService.save_apply(map);
+    }
+
+
+    /**
+     * 修改物资申请
+     * @param map
+     * @return
+     */
+    @RequestMapping(value="/update_apply",method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult upateApply(@RequestParam Map map){
+        return iAssetsApplyService.update_apply(map);
+    }
+
+    /**
+     * 删除指定流程
+     */
+    @RequestMapping(value = "/del_apply", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult delApply(@RequestParam Map map) {
+        return  iAssetsApplyService.del_apply(map);
     }
 
 

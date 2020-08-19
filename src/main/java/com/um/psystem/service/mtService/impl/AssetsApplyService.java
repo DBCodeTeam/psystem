@@ -8,6 +8,8 @@ import com.um.psystem.model.sysModel.response.UserResponse;
 import com.um.psystem.model.vo.JsonResult;
 import com.um.psystem.service.mtService.IAssetsApplyService;
 import com.um.psystem.utils.RTX;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
@@ -100,6 +102,9 @@ public class AssetsApplyService implements IAssetsApplyService {
         String node_name="";
         String flow_id="";
         String operator="";
+        String demand_time="";
+        String stock_num="";
+        String apply_reason="";
         if(StrUtil.isNotBlank(map.get("erpInfo")!=null?map.get("erpInfo").toString():null)){
             erp_no = map.get("erpInfo").toString();
         }
@@ -120,6 +125,15 @@ public class AssetsApplyService implements IAssetsApplyService {
         }
         if(StrUtil.isNotBlank(map.get("assets_id")!=null?map.get("assets_id").toString():null)){
             assets_id = map.get("assets_id").toString();
+        }
+        if(StrUtil.isNotBlank(map.get("stock_num")!=null?map.get("stock_num").toString():null)){
+            stock_num = map.get("stock_num").toString();
+        }
+        if(StrUtil.isNotBlank(map.get("demand_time")!=null?map.get("demand_time").toString():null)){
+            demand_time = map.get("demand_time").toString();
+        }
+        if(StrUtil.isNotBlank(map.get("apply_reason")!=null?map.get("apply_reason").toString():null)){
+            apply_reason = map.get("apply_reason").toString();
         }
 
         String sql = " select id,node_seq,turn_node_seq,node_name from ws_eng_assets_apply_flow "
@@ -145,6 +159,7 @@ public class AssetsApplyService implements IAssetsApplyService {
         }
         paramsMap.clear();
 
+        apply_man = SecurityUtils.getSubject().getPrincipal().toString();
         sql ="select a.dept_name from ws_department a "
             + "left join( "
             + "select b.dept_name,dept_group_id from ws_employee a "
@@ -161,9 +176,10 @@ public class AssetsApplyService implements IAssetsApplyService {
         }
         paramsMap.clear();
         sql="  insert into ws_eng_assets_apply_info(erp_no,apply_dept,apply_man,out_type,"
-                  + " apply_num,return_plandate,apply_time,state,currentuser,operator_record,assets_id,node_seq,turn_node_seq) "
+                  + " apply_num,return_plandate,apply_time,state,currentuser,operator_record,"
+                  + "assets_id,node_seq,turn_node_seq,demand_time,stock_num,apply_reason) "
                   + " select #{erp_no},#{apply_dept},#{apply_man},#{out_type},#{apply_num},#{return_plandate},now(),"
-                  + " #{state},#{currentuser},#{operator_record},#{assets_id},#{node_seq},#{turn_node_seq} ";
+                  + " #{state},#{currentuser},#{operator_record},#{assets_id},#{node_seq},#{turn_node_seq},#{demand_time},#{stock_num},#{apply_reason} ";
         paramsMap.put("isqlStr",sql);
         paramsMap.put("erp_no",erp_no);
         paramsMap.put("apply_dept",apply_dept);
@@ -177,9 +193,74 @@ public class AssetsApplyService implements IAssetsApplyService {
         paramsMap.put("assets_id",assets_id);
         paramsMap.put("node_seq",node_seq);
         paramsMap.put("turn_node_seq",turn_node_seq);
+        paramsMap.put("demand_time",demand_time);
+        paramsMap.put("stock_num",stock_num);
+        paramsMap.put("apply_reason",apply_reason);
+        int saveNum = publicMapper.saveItems(paramsMap);
+        if(saveNum>0){
+            RTX.sendMsg("物资申请消息","物资申请审核",operator);
+        }
+        return JsonResult.success(saveNum);
+    }
+
+    public JsonResult<Integer> update_apply(Map map){
+        Map paramsMap = new HashMap();
+        String out_type="";
+        String apply_num="";
+        String return_plandate="";
+        String operator="";
+        String demand_time="";
+        String stock_num="";
+        String apply_id="";
+        String apply_reason="";
+        if(StrUtil.isNotBlank(map.get("out_type")!=null?map.get("out_type").toString():null)){
+            out_type = map.get("out_type").toString();
+        }
+        if(StrUtil.isNotBlank(map.get("apply_num")!=null?map.get("apply_num").toString():null)){
+            apply_num = map.get("apply_num").toString();
+        }
+        if(StrUtil.isNotBlank(map.get("return_plandate")!=null?map.get("return_plandate").toString():null)){
+            return_plandate = map.get("return_plandate").toString();
+        }
+        if(StrUtil.isNotBlank(map.get("stock_num")!=null?map.get("stock_num").toString():null)){
+            stock_num = map.get("stock_num").toString();
+        }
+        if(StrUtil.isNotBlank(map.get("demand_time")!=null?map.get("demand_time").toString():null)){
+            demand_time = map.get("demand_time").toString();
+        }
+
+        if(StrUtil.isNotBlank(map.get("apply_id")!=null?map.get("apply_id").toString():null)){
+            apply_id = map.get("apply_id").toString();
+        }
+        if(StrUtil.isNotBlank(map.get("apply_reason")!=null?map.get("apply_reason").toString():null)){
+            apply_reason = map.get("apply_reason").toString();
+        }
+        String sql=" update ws_eng_assets_apply_info"
+            +" set out_type=#{out_type},"
+            +" apply_num=#{out_type},return_plandate=#{return_plandate},apply_time=#{apply_time},"
+            +" demand_time=#{demand_time},stock_num=#{stock_num},apply_reason=#{apply_reason}"
+            +" where apply_id=#{apply_id}";
+        paramsMap.put("usqlStr",sql);
+        paramsMap.put("out_type",out_type);
+        paramsMap.put("apply_num",apply_num);
+        paramsMap.put("return_plandate",return_plandate);
+        paramsMap.put("demand_time",demand_time);
+        paramsMap.put("stock_num",stock_num);
+        paramsMap.put("apply_id",apply_id);
+        paramsMap.put("apply_reason",apply_reason);
         RTX.sendMsg("物资申请消息","物资申请审核",operator);
 
-        return JsonResult.success(publicMapper.saveItems(paramsMap));
+        return JsonResult.success(publicMapper.updateItems(paramsMap));
+    }
+
+    @Override
+    public JsonResult<Integer> del_apply(Map map) {
+        Integer apply_id = Integer.parseInt(map.get("apply_id").toString());
+        Map paramsMap =new HashMap();
+        String sql = " delete from ws_eng_assets_apply_info where apply_id=#{apply_id}";
+        paramsMap.put("dsqlStr",sql);
+        paramsMap.put("id",apply_id);
+        return JsonResult.success(publicMapper.delItems(paramsMap));
     }
 
     public JsonResult<Integer> check_apply(Map map){
@@ -413,15 +494,22 @@ public class AssetsApplyService implements IAssetsApplyService {
     public List<Map<String, Object>> getApplyList(Map map) {
         String erp_no="";
         String sqltmp="";
+        String apply_man="";
         Map paramsMap = new HashMap();
         Integer page = Integer.parseInt((map.get("page")!=null?map.get("page").toString():"0"));
         Integer rows = Integer.parseInt((map.get("rows")!=null?map.get("rows").toString():"0"));
-        String  sql = " select count(*) as totals from ws_eng_assets_apply_info a where 1=1 "+sqltmp;
+
         if(StrUtil.isNotBlank(map.get("erp_no")!=null?map.get("erp_no").toString():null)){
             sqltmp+=" and a.erp_no=#{erp_no}";
             erp_no =map.get("erp_no").toString();
             paramsMap.put("erp_no",erp_no);
         }
+        if(StrUtil.isNotBlank(map.get("apply_man")!=null?map.get("apply_man").toString():null)){
+            sqltmp+=" and a.apply_man=#{apply_man}";
+            apply_man =map.get("apply_man").toString();
+            paramsMap.put("apply_man",apply_man);
+        }
+        String  sql = " select count(*) as totals from ws_eng_assets_apply_info a where 1=1 "+sqltmp;
         paramsMap.put("sqlStr",sql);
         int totals=0;
         List<Map<String,Object>> list_count = publicMapper.getPublicItems(paramsMap);

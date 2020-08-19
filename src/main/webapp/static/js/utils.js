@@ -42,6 +42,7 @@ var U = {
                     U.msg("服务器异常：响应结果为空");
 				}else {
                     args.success(data,status);
+
                 }
 
 	        	if(args.loading){
@@ -59,6 +60,9 @@ var U = {
 	        		U.msg("服务器异常");
 	        	}
 	        },
+			complete:function(){
+				args.com
+			},
 
 	        /*请求头设置*/
 	        headers: {

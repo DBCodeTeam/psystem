@@ -38,7 +38,6 @@ var dialog_assets;
                 {field: 'dept_name', title: '物资部门',  width: 100},
                 {field: 'type_main_name', title: '物资类别',  width: 100},
                 {field: 'type_dtl_name', title: '物资名称',  width: 100},
-                {field: 'type_dtl_name', title: '物资名称', width: 100},
                 {field: 'type_dtl_no', title: '物资编号',  width: 100},
                 {field: 'model', title: '型号',  width: 100},
                 {field: 'sizes', title: '规格',  width: 100},
@@ -51,6 +50,9 @@ var dialog_assets;
                 {field: 'refusereason_user', title: '拒绝发放人',  width: 100},
                 {field: 'refusereason', title: '拒绝发放原因',  width: 100},
                 {field: 'operator_record', title: '操作记录',  width: 100},
+                {field: 'apply_reason', title: '申请原因',  width: 100},
+                {field: 'stock_num', title: '库存数量',  width: 100},
+                {field: 'demand_time', title: '需求日期',  width: 100},
                 {
                     field: 'operate', title: '操作', width: 100,
                     formatter: function (value, row, index) {
@@ -115,7 +117,9 @@ var dialog_assets;
 
     function queryApply() {
         $(datagrid).datagrid('load', {
-            }
+             erp_no:$("#erp_no_s").val(),
+             apply_man:$("#apply_man_s").val()
+         }
         );
     }
 
@@ -241,13 +245,38 @@ var dialog_assets;
     }
 
     function add_apply(){
+        setVal("#dept_name","");
+        setVal("#type_main_name","");
+        setVal("#type_dtl_name","");
+        setVal("#type_dlt_no","");
+        setVal("#model","");
+        setVal("#sizes","");
+        setVal("#return_plandate","");
+        setVal("#apply_num","");
+        setVal("#apply_man","");
+        setVal("#apply_time","");
+        setVal("#currentuser","");
+        setVal("#backto_user","");
+        setVal("#backto_time","");
+        setVal("#besureout_user","");
+        setVal("#besureout_time","");
+        setVal("#refusereason","");
+        setVal("#operator_record","");
+        setVal("#apply_reason","");
+        setVal("#stock_num","");
+        setVal("#demand_time","");
+        $("#assets_id").val("");
+        $("#apply_id").val("");
+        setVal("#conProductNum","");
+        setVal("#conDept","");
+        setVal("#sdOrderAmount","");
+        setVal("#cusSentToName","");
         $.getJSON(getRootPath()+"/mtManage/assets/list_erp",function(json) {
             $('#erpInfo').combobox({
                 data: json.data, //获取到的json 数据
                 valueField:"conErpNo",
                 textField:"conErpNo",
                 onSelect: function (record) {
-                    console.log(record.conErpNo);
                     if(record.conErpNo!=""){
                         U.post({
                             url: getRootPath()+"/mtManage/assets/getErpInfo",
@@ -299,7 +328,7 @@ var dialog_assets;
         dialog_apply_form = $("#dlg_apply_form").dialog({
             title: '添加申请',
             width: 680,
-            height: 400,
+            height: 500,
             maximizable: false,
             modal: true,
             buttons: [{
@@ -417,17 +446,20 @@ var dialog_assets;
         setVal("#type_dlt_no",row_apply.type_dlt_no);
         setVal("#model",row_apply.model);
         setVal("#sizes",row_apply.sizes);
-        setVal("#return_plandate",row_apply.return_plandate);
+        setVal("#return_plandate",new Date(row_apply.return_plandate).format('yyyy-MM-dd'));
         setVal("#apply_num",row_apply.apply_num);
         setVal("#apply_man",apply_man);
-        setVal("#apply_time",row_apply.apply_time);
+        setVal("#apply_time",new Date(row_apply.apply_time).format('yyyy-MM-dd'));
         setVal("#currentuser",currentuser);
         setVal("#backto_user",row_apply.backto_user);
-        setVal("#backto_time",row_apply.backto_time);
+        setVal("#backto_time",new Date(row_apply.backto_time).format('yyyy-MM-dd'));
         setVal("#besureout_user",row_apply.besureout_user);
         setVal("#besureout_time",row_apply.besureout_time);
         setVal("#refusereason",row_apply.refusereason);
         setVal("#operator_record",row_apply.operator_record);
+        setVal("#demand_time",new Date(row_apply.demand_time).format('yyyy-MM-dd'));
+        setVal("#stock_num",row_apply.stock_num);
+        setVal("#apply_reason",row_apply.apply_reason);
         $("#assets_id").val(row_apply.assets_id);
         $("#apply_id").val(id);
         $("#out_type").combobox('setValue',row_apply.out_type);
@@ -489,11 +521,11 @@ var dialog_assets;
         dialog_apply_form = $("#dlg_apply_form").dialog({
             title: '编辑申请',
             width: 680,
-            height: 400,
+            height: 500,
             maximizable: false,
             modal: true,
             buttons: [{
-                id:'applyBtn',
+                id:'updateBtn',
                 text: '确认',
                 iconCls: 'icon-ok',
                 handler: function () {
@@ -502,7 +534,7 @@ var dialog_assets;
                     //console.log($('#form_apply'));
                     if (isValid) {
                         U.post({
-                            url: getRootPath()+"/mtManage/assets/add_apply",
+                            url: getRootPath()+"/mtManage/assets/update_apply",
                             loading: true,
                             data: $('#form_apply').serialize(),
                             success: function (data) {
@@ -608,20 +640,23 @@ function operator_apply() {
     setVal("#dept_name",row_apply.dept_name);
     setVal("#type_main_name",row_apply.type_main_name);
     setVal("#type_dtl_name",row_apply.type_dtl_name);
-    setVal("#type_dtl_no",row_apply.type_dtl_no);
+    setVal("#type_dlt_no",row_apply.type_dlt_no);
     setVal("#model",row_apply.model);
     setVal("#sizes",row_apply.sizes);
-    setVal("#return_plandate",row_apply.return_plandate);
+    setVal("#return_plandate",new Date(row_apply.return_plandate).format('yyyy-MM-dd'));
     setVal("#apply_num",row_apply.apply_num);
     setVal("#apply_man",apply_man);
-    setVal("#apply_time",row_apply.apply_time);
+    setVal("#apply_time",new Date(row_apply.apply_time).format('yyyy-MM-dd'));
     setVal("#currentuser",currentuser);
     setVal("#backto_user",row_apply.backto_user);
-    setVal("#backto_time",row_apply.backto_time);
+    setVal("#backto_time",new Date(row_apply.backto_time).format('yyyy-MM-dd'));
     setVal("#besureout_user",row_apply.besureout_user);
     setVal("#besureout_time",row_apply.besureout_time);
     setVal("#refusereason",row_apply.refusereason);
     setVal("#operator_record",row_apply.operator_record);
+    setVal("#demand_time",new Date(row_apply.demand_time).format('yyyy-MM-dd'));
+    setVal("#stock_num",row_apply.stock_num);
+    setVal("#apply_reason",row_apply.apply_reason);
     $("#assets_id").val(row_apply.assets_id);
     $("#apply_id").val(id);
     $("#out_type").combobox('setValue',row_apply.out_type);
@@ -632,7 +667,6 @@ function operator_apply() {
             valueField:"conErpNo",
             textField:"conErpNo",
             onSelect: function (record) {
-                console.log(record.conErpNo);
                 if(record.conErpNo!=""){
                     U.post({
                         url: getRootPath()+"/mtManage/assets/getErpInfo",
@@ -663,8 +697,8 @@ function operator_apply() {
     });
 
 
-    $("#apply_time_span").hide();
-    $("#apply_time_td").hide();
+    //$("#apply_time_span").hide();
+    //$("#apply_time_td").hide();
     //$("#apply_time").next().hide();
     /*$("#currentuser_span").hide();
     $("#currentuser").next().hide();*/
@@ -685,7 +719,7 @@ function operator_apply() {
     dialog_apply_form = $("#dlg_apply_form").dialog({
         title: '物资申请',
         width: 680,
-        height: 400,
+        height: 500,
         maximizable: false,
         modal: true,
         buttons: [{
@@ -970,6 +1004,39 @@ function operator_apply() {
             }
         });
     }
+
+function remove_apply(id) {
+    var row = datagrid.datagrid('getSelected');
+    if (row == null) {
+        U.msg('请先选中');
+        return;
+    } else {
+        id = row.apply_id;
+    }
+
+    parent.$.messager.confirm('提示', '删除后无法恢复您确定要删除？', function (data) {
+        if (data) {
+            U.post({
+                url: getRootPath()+"/mtManage/assets/del_apply",
+                loading: true,
+                data: {apply_id: id},
+                success: function (data) {
+                    if (data.code == 200) {
+                        U.msg('删除成功');
+                        queryApply();
+                    } else if (data.code == 400) {//参数验证失败
+                        U.msg('参数验证失败');
+                    } else if (data.code == 404) {
+                        U.msg('未找到该用户');
+                    } else {
+                        U.msg('服务器异常');
+                    }
+                }
+            });
+        }
+    });
+}
+
     /**操作员配置列表*/
     function getOperator(){
             var row = flowDataGrid.datagrid('getSelected');
@@ -1086,7 +1153,7 @@ function operator_apply() {
                             if (data.code == 200) {
                                 U.msg('修改成功');
                                 dialog_flow.dialog('close');
-                                queryUsers();
+                                queryFlow();
                             } else if (data.code == 400) {//参数验证失败
                                 U.msg('参数验证失败');
                             } else if (data.code == 404) {
@@ -1244,3 +1311,125 @@ function operator_apply() {
         }
         return roleIds;
     }
+
+function printBill(){
+    var row_apply = datagrid.datagrid('getSelected');
+    var erpInfo;
+    var nw;
+    var conProductNum="";
+    var sdOrderAmount="";
+    var cusSentToName="";
+    var conDept="";
+    $.ajax({
+        type:'post',
+        url: getRootPath()+"/mtManage/assets/getErpInfo",
+        data: {
+            conErpNo:row_apply.erp_no
+        },
+        success: function (data) {
+            if (data.code == 200) {
+                erpInfo = data.data[0];
+                var conProductNum=erpInfo.conProductNum;
+                var sdOrderAmount=erpInfo.sdOrderAmount;
+                var cusSentToName=erpInfo.cusSentToName;
+                var conDept=erpInfo.conDept;
+                nw = window.open();
+                //将表格放在div里，然后把整个div里面的内容给赋给一个变量。
+                var tab_html = '<div id="sendTitle" style="width:1150px;margin:0 auto;height:30px;"><img style="width:420px;height:60px;" src="/psystem/static/images/tablelogo.png"/></div>'
+                    +"<div style=\"width:1150px;margin:0 auto\">"
+                    +"     <p align=\"center\" style=\"font-size:20px;\">请购单</p>"
+                    +"  <div width=\"1150px\" style=\"font-size:20px;\" style=\"margin-bottom:10px;\">"
+                    +"    <span style=\"margin-right:100px;\">申购部门:"+row_apply.apply_dept+"</span>"
+                    +"    <span style=\"margin-right:100px;\">申购人:"+row_apply.apply_man+"</span>"
+                    +"   <span style=\"margin-right:100px;\">申请日期:"+new Date(row_apply.apply_time).format('yyyy-MM-dd')+"</span>"
+                    +"  </div>"
+                    +"  <div width=\"1150px\" style=\"font-size:20px;\">"
+                    +"   <span>申购类型:"
+                    +"   <input type=\"checkbox\" name=\"temp\" value=\"临时\" />临时"
+                    +"   <input type=\"checkbox\" name=\"new\" value=\"新增\" style=\"margin-left:50px;\"/>新增"
+                    +"   <input type=\"checkbox\" name=\"special\" value=\"订单特殊需求\" style=\"margin-left:50px;\" />订单特殊需求"
+                    +"   <input type=\"checkbox\" name=\"temp\" value=\"外部维修\" style=\"margin-left:50px;\" />外部维修"
+                    +"   </span>"
+                    +" </div>"
+                    +"  </div>"
+                    +"  <table border=\"1\" cellspacing=\"0\"  width=\"1150px\" style=\"margin:0 auto;\">"
+                    +"   <tbody>"
+                    +"    <tr>"
+                    +"     <th align=\"center\" width=\"100px;\">序号</th>"
+                    +"     <th align=\"center\" width=\"100px;\">物品名称</th>"
+                    +"     <th align=\"center\" width=\"100px;\">数量/单位</th>"
+                    +"     <th align=\"center\" width=\"100px;\">规格</th>"
+                    +"     <th align=\"center\" width=\"100px;\">单价</th>"
+                    +"     <th align=\"center\" width=\"200px;\">用途</th>"
+                    +"     <th align=\"center\" width=\"100px;\">申请原因</th>"
+                    +"     <th align=\"center\" width=\"100px;\">需求日期</th>"
+                    +"     <th align=\"center\" width=\"150px;\">确认库存数量</th>"
+                    +"     <th align=\"center\" width=\"100px;\">备注</th>"
+                    +"    </tr>"
+                    +"    <tr id=\"item01\">"
+                    +"     <td align=\"center\" width=\"100px;\">1</td>"
+                    +"     <td align=\"center\" width=\"100px;\">"+row_apply.type_dtl_name+"</td>"
+                    +"     <td align=\"center\" width=\"100px;\">"+row_apply.apply_num+"</td>"
+                    +"     <td align=\"center\" width=\"100px;\">"+row_apply.sizes+"</td>"
+                    +"     <td align=\"center\" width=\"100px;\"></td>"
+                    +"     <td align=\"center\" width=\"200px;\">订单号:"+row_apply.erp_no+"</br>"
+                    +"     机型:"+conProductNum+"</br>"
+                    +"     数量:"+sdOrderAmount+"</br>"
+                    +"     发往地:"+cusSentToName+"</br>"
+                    +"     事业部:"+conDept
+                    +"    </td>"
+                    +"     <td align=\"center\" width=\"100px;\">"+row_apply.apply_reason+"</td>"
+                    +"     <td align=\"center\" width=\"100px;\">"+new Date(row_apply.demand_time).format('yyyy-MM-dd')+"</td>"
+                    +"     <td align=\"center\" width=\"150px;\">"+row_apply.stock_num+"</td>"
+                    +"     <td align=\"center\" width=\"100px;\"></td>"
+                    +"    </tr>"
+                    +" <tr height=\"50px\">"
+                    +" <td colspan=\"10\" >具体要求:</td>"
+                    +"</tr>"
+                    +"<tr height=\"40px\">"
+                    +"  <td colspan=\"5\">预算资金:</td>"
+                    +"  <td colspan=\"5\">结算资金:</td>"
+                    +"</tr>"
+                    +"<tr height=\"40px\">"
+                    +   "<td colspan=\"3\">部门经理审核:</td>"
+                    +   "<td colspan=\"4\">副总经理审核:</td>"
+                    +   "<td colspan=\"3\">总经理审核:</td>"
+                    +"</tr>"
+                    +"<tr height=\"40px\">"
+                    +"  <td colspan=\"5\">报价初核:</td>"
+                    +"  <td colspan=\"5\">报价批准:</td>"
+                    +"</tr>"
+                    +"</tbody>"
+                    +"</table>"
+                    +"<div style=\"width:1150px;margin:0 auto;\">"
+                    +"<p>说明：签名时，请签上日期。</p>"
+                    +"</div>"
+                    +"<div style=\"width:1150px;margin:0 auto;\">"
+                    +" <p align=\"right\" style=\"height:10px;\">表单编号：UM-FM-GP-038D</p>"
+                    +" <p align=\"right\" style=\"height:10px;align:right;\">保存期限：2年</p>"
+                    +"</div>";
+                var tit_html =	'<div id="sendTitle" style="width:1150px;"><center><span style="font-size:24px"><b></b></span></center></div>';
+                tab_html = tab_html.replace(/disabled/g,"");
+                tab_html = tab_html.replace(/<TEXTAREA/g,'<TEXTAREA readonly style="border:0px 0px 0px 0px;"');
+                tab_html = tab_html.replace(/<INPUT/g,'<INPUT readonly style="border:0px 0px 0px 0px;" ');
+                tab_html = tab_html.replace(/type=checkbox/g,'type=checkbox onClick="return false;"');
+                tab_html = tab_html.replace(/type=button/g,'type=button style="visibility:hidden"');
+                //console.log(tab_html);
+                //document.getElementsByTagName('body')[0].style.zoom=0.92;
+                nw.document.open( "text/html", "GB2312");
+                nw.document.write("<style media=print>.Noprint{display:none;}.PageNext{page-break-BEFORE: always;} html{zoom:80%;}</style>");
+                nw.document.write(tit_html);//打印第一个表格
+                nw.document.write(tab_html);//打印第一个表格
+                nw.document.write('<div  style="margin:0 auto;width:100px;"><input type="button" class="Noprint" onclick = "javascript:window.print()" value="确定打印" /></div>');
+                //nw.location.reload();
+                //nw.document.close();
+            }
+        },
+        complete:function(){
+
+        }
+    });
+
+    /*document.body.innerHTML=document.getElementById('dlg_apply_form').innerHTML;
+    window.print();*/
+}

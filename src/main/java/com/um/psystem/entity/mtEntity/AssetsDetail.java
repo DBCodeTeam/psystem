@@ -43,5 +43,12 @@ public class AssetsDetail {
 
      private String remark;
 
+     /**品牌*/
+     private String brand_name;
+     /**用途*/
+     private String use_to;
+     /**k3编码*/
+     private String k3_code;
+
 
 }
