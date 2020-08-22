@@ -92,7 +92,7 @@ public class EasyExcelUtils {
                             row.add(cellStrValue);
                         }
                     }
-                    rows.add(row);
+                    rows.add(row);// 将每一行的数据放在rows里面
                     listIterator.remove();
                 }
             }
