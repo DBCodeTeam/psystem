@@ -2,11 +2,13 @@ package com.um.psystem.service.mtService.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.um.psystem.common.Const;
+import com.um.psystem.entity.ExcelHeader;
 import com.um.psystem.enums.ResponseEnum;
 import com.um.psystem.mapper.platform.PublicMapper;
 import com.um.psystem.model.sysModel.response.UserResponse;
 import com.um.psystem.model.vo.JsonResult;
 import com.um.psystem.service.mtService.IAssetsApplyService;
+import com.um.psystem.utils.EasyExcelUtils;
 import com.um.psystem.utils.RTX;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
@@ -15,10 +17,13 @@ import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * @Author: zzj
@@ -213,6 +218,7 @@ public class AssetsApplyService implements IAssetsApplyService {
         String stock_num="";
         String apply_id="";
         String apply_reason="";
+        String flow_id="";
         if(StrUtil.isNotBlank(map.get("out_type")!=null?map.get("out_type").toString():null)){
             out_type = map.get("out_type").toString();
         }
@@ -235,10 +241,32 @@ public class AssetsApplyService implements IAssetsApplyService {
         if(StrUtil.isNotBlank(map.get("apply_reason")!=null?map.get("apply_reason").toString():null)){
             apply_reason = map.get("apply_reason").toString();
         }
-        String sql=" update ws_eng_assets_apply_info"
+
+        String sql = " select id,node_seq,turn_node_seq,node_name from ws_eng_assets_apply_flow "
+                + " where model_name=#{model_name} order by id asc limit 1 ";
+        paramsMap.put("model_name","工程物资申请");
+        paramsMap.put("sqlStr",sql);
+        List<LinkedHashMap<String,Object>> nodeList= publicMapper.getPublicItems(paramsMap);
+        if(nodeList.size()>0){
+            flow_id=nodeList.get(0).get("id").toString();
+        }
+        paramsMap.clear();
+        sql = " select a.user_name,a.sequence from ws_eng_assets_operator_config a "
+                + " where a.operator_node=#{flow_id} "
+                + " order by a.sequence asc limit 1 ";
+        paramsMap.put("sqlStr",sql);
+        paramsMap.put("flow_id",flow_id);
+        List<LinkedHashMap<String,Object>> operatorList= publicMapper.getPublicItems(paramsMap);
+        if(operatorList.size()>0){
+            operator = operatorList.get(0).get("user_name").toString();
+        }
+        paramsMap.clear();
+        String apply_man = SecurityUtils.getSubject().getPrincipal().toString();
+        sql=" update ws_eng_assets_apply_info"
             +" set out_type=#{out_type},"
-            +" apply_num=#{out_type},return_plandate=#{return_plandate},apply_time=#{apply_time},"
-            +" demand_time=#{demand_time},stock_num=#{stock_num},apply_reason=#{apply_reason}"
+            +" apply_num=#{apply_num},return_plandate=#{return_plandate},"
+            +" demand_time=#{demand_time},stock_num=#{stock_num},apply_reason=#{apply_reason},state=#{state},"
+            + "operator_record=concat(operator_record,'==>申请(',#{apply_man},')')"
             +" where apply_id=#{apply_id}";
         paramsMap.put("usqlStr",sql);
         paramsMap.put("out_type",out_type);
@@ -248,6 +276,10 @@ public class AssetsApplyService implements IAssetsApplyService {
         paramsMap.put("stock_num",stock_num);
         paramsMap.put("apply_id",apply_id);
         paramsMap.put("apply_reason",apply_reason);
+        paramsMap.put("apply_man",apply_man);
+        paramsMap.put("state","审核");
+        paramsMap.put("node_seq","1");
+        paramsMap.put("turn_node_seq","2");
         RTX.sendMsg("物资申请消息","物资申请审核",operator);
 
         return JsonResult.success(publicMapper.updateItems(paramsMap));
@@ -261,6 +293,61 @@ public class AssetsApplyService implements IAssetsApplyService {
         paramsMap.put("dsqlStr",sql);
         paramsMap.put("id",apply_id);
         return JsonResult.success(publicMapper.delItems(paramsMap));
+    }
+
+    @Override
+    public void exportApplyData(HttpServletResponse response, Map map) {
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码
+        String fileName = null;
+        try {
+            fileName = URLEncoder.encode("物资申请数据", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xls");
+        List<ExcelHeader> headerList = new ArrayList<>();
+        headerList.add(new ExcelHeader("erp_no","ERP编号"));
+        headerList.add(new ExcelHeader("apply_dept","申请部门"));
+        headerList.add(new ExcelHeader("apply_man","申请人"));
+        ExcelHeader dateHeader =new ExcelHeader("return_plandate","预计归还");
+        dateHeader.setDataType(ExcelHeader.DATE);
+        dateHeader.setFormat("yyyy-MM-dd");
+        headerList.add(dateHeader);
+        ExcelHeader dateApplyHeader =new ExcelHeader("apply_time","申请时间");
+        dateApplyHeader.setDataType(ExcelHeader.DATE);
+        dateApplyHeader.setFormat("yyyy-MM-dd");
+        headerList.add(dateApplyHeader);
+        headerList.add(new ExcelHeader("state","状态"));
+        headerList.add(new ExcelHeader("currentuser","当前责任人"));
+        headerList.add(new ExcelHeader("dept_name","物资部门"));
+        headerList.add(new ExcelHeader("type_main_name","物资类别"));
+        headerList.add(new ExcelHeader("type_dtl_name","物资名称"));
+        headerList.add(new ExcelHeader("type_dtl_no","物资编号"));
+        headerList.add(new ExcelHeader("model","型号"));
+        headerList.add(new ExcelHeader("sizes","规格"));
+        headerList.add(new ExcelHeader("out_type","出库类型"));
+        headerList.add(new ExcelHeader("apply_num","申请数量"));
+        headerList.add(new ExcelHeader("backto_user","打回人"));
+        ExcelHeader dateBackHeader =new ExcelHeader("backto_time","打回时间");
+        dateBackHeader.setDataType(ExcelHeader.DATE);
+        dateBackHeader.setFormat("yyyy-MM-dd HH:mm:ss");
+        headerList.add(dateBackHeader);
+        headerList.add(new ExcelHeader("apply_reason","申请原因"));
+        headerList.add(new ExcelHeader("stock_num","库存数量"));
+        ExcelHeader dateNeedHeader =new ExcelHeader("demand_time","需求日期");
+        dateNeedHeader.setDataType(ExcelHeader.DATE);
+        dateNeedHeader.setFormat("yyyy-MM-dd HH:mm:ss");
+        headerList.add(dateNeedHeader);
+
+        List<Map<String,Object>> dataList = getApplyList(map);
+        OutputStream excelOutputStream = EasyExcelUtils.exportDataToExcel(headerList,dataList);
+        try {
+            response.getOutputStream().write(((ByteArrayOutputStream) excelOutputStream).toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public JsonResult<Integer> check_apply(Map map){
@@ -319,7 +406,7 @@ public class AssetsApplyService implements IAssetsApplyService {
             List<LinkedHashMap<String,Object>> nextNodeOperList= publicMapper.getPublicItems(paramsMap);
             if(nextNodeOperList.size()>0){
                 nodeOperator = nextNodeOperList.get(0).get("user_name").toString();
-                state = "已审核";
+                state = "发放";
                 sendInfo="请为审核过的订单发放物资";
             }
         }
@@ -336,7 +423,6 @@ public class AssetsApplyService implements IAssetsApplyService {
         paramsMap.put("state",state);
         int updateNum = publicMapper.updateItems(paramsMap);
         if(updateNum>0){
-            sendInfo="";
             RTX.sendMsg("物资申请消息",sendInfo,nodeOperator);
             return JsonResult.success(updateNum);
         }else{
@@ -365,11 +451,12 @@ public class AssetsApplyService implements IAssetsApplyService {
         }
         sqltmp = "operator_record=concat(operator_record,'==>打回(',#{operator},')')";
         String sql = " update ws_eng_assets_apply_info set currentuser=#{nodeoperator},"
-                + " node_seq='-1',turn_node_seq='1',state=#{state}, "
+                + " node_seq='-1',turn_node_seq='1',state=#{state},backto_user=#{backto_user},backto_time=now() "
                 + sqltmp +" where apply_id=#{apply_id}";
         paramsMap.put("usqlStr",sql);
         paramsMap.put("apply_id",apply_id);
         paramsMap.put("operator",username);
+        paramsMap.put("backto_user",username);
         paramsMap.put("nodeoperator",apply_man);
         paramsMap.put("state","打回");
         int updateNum = publicMapper.updateItems(paramsMap);
@@ -408,7 +495,7 @@ public class AssetsApplyService implements IAssetsApplyService {
         paramsMap.put("apply_id",apply_id);
         paramsMap.put("operator",username);
         paramsMap.put("nodeoperator",apply_man);
-        paramsMap.put("state","打回");
+        paramsMap.put("state","已发放");
         int updateNum = publicMapper.updateItems(paramsMap);
         if(updateNum>0){
             sendInfo="您的物资申请已发放";
@@ -516,7 +603,12 @@ public class AssetsApplyService implements IAssetsApplyService {
         if(list_count.size()>0){
             totals = Integer.parseInt(list_count.get(0).get("totals").toString());
         }
-        sql = " select a.*,b.dept_name,c.*,d.conErpNo,d.conProductNum,d.conDept,d.sdOrderAmount,d.cusSentToName,"+totals+ " as totals from ws_eng_assets_apply_info a "
+        sql = " select a.erp_no,a.apply_dept,a.apply_man,a.return_plandate,a.apply_time,a.state,a.currentuser, "
+                    + "a.state,a.currentuser,b.dept_name,b.type_main_name,c.type_dtl_name,c.type_dtl_no,c.model,c.sizes,a.out_type, "
+                    + "a.apply_num,a.backto_user,a.backto_time,a.apply_reason,a.stock_num,a.demand_time,a.operator_record,"
+                    + "a.besureout_user,a.besureout_time,a.refusereason,a.refusereason_user,a.refusereason_time, "
+                    + "a.node_seq,a.turn_node_seq,a.assets_id,c.use_to,c.k3_code,c.brand_name,a.apply_id,"
+                    + "d.conErpNo,d.conProductNum,d.conDept,d.sdOrderAmount,d.cusSentToName,"+totals+ " as totals from ws_eng_assets_apply_info a "
                     + "left join ws_eng_assets_type_dtl c "
                     + "on a.assets_id=c.type_dtl_id "
                     + "left join "
@@ -565,7 +657,7 @@ public class AssetsApplyService implements IAssetsApplyService {
     public List<Map<String, Object>> getErpNo(Map map) {
         Map paramsMap = new HashMap();
         String conErpNo="";
-        String sql = " select conErpNo,cusSentToName,conProductNum,sdOrderAmount,conDept from uws_produceorder_confirmation_query where 1=1 ";
+        String sql = " select conErpNo,cusSentToName,conProductNum,sdOrderAmount,conDept from uws_produceorder_confirmation_query where conErpNo is not null ";
         if(map!=null){
             if(StrUtil.isNotBlank(map.get("conErpNo")!=null?map.get("conErpNo").toString():null)){
                 sql+=" and conErpNo=#{conErpNo} ";

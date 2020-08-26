@@ -2,8 +2,11 @@ package com.um.psystem.service.mtService;
 
 import com.um.psystem.model.vo.JsonResult;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +56,8 @@ public interface IAssetsApplyService {
 
      JsonResult<Integer> update_apply(Map map);
 
-    JsonResult<Integer> del_apply(Map map);
+     JsonResult<Integer> del_apply(Map map);
+
+     void exportApplyData(HttpServletResponse response, @RequestParam Map map);
 
 }

@@ -210,7 +210,7 @@
                 <div data-options="region:'center',border:false">
 
                     <!--start easyui-accordion-->
-                    <div class="easyui-accordion" data-options="border:false,fit:true" id="menu-container">
+                    <div class="easyui-accordion" data-options="border:false,fit:true,selected:false" id="menu-container">
                         <c:forEach var="menu" items="${menus}">
                             <c:if test="${menu.parentId==null}">
                                 <div title="${menu.name}">

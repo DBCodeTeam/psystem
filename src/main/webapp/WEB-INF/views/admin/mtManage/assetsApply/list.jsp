@@ -58,6 +58,8 @@
                plain="true">删除</a>
             <a href="javascript:void(0)" onclick="getFlow()" class="easyui-linkbutton" iconCls="icon-user-config"
                plain="true">流程配置</a>
+            <a href="javascript:void(0)" onclick="exportApplyData()" class="easyui-linkbutton" iconCls="icon-user-config"
+               plain="true">导出</a>
             <%--<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true">保存</a>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cut" plain="true">剪切</a>--%>
 
@@ -268,6 +270,8 @@
                         <td>
                             <input id="apply_num" name="apply_num" class="easyui-textbox" data-options="required:true"/>
                             <input id="apply_id" name="apply_id" type="hidden"/>
+                            <%--<input id="node_seq" name="node_seq" type="hidden"/>
+                            <input id="turn_node_seq" name="turn_node_seq" type="hidden"/>--%>
                         </td>
                     </tr>
 

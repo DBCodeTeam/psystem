@@ -1,8 +1,6 @@
 package com.um.psystem.controller.mtManage;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.poi.excel.ExcelUtil;
-import com.alibaba.excel.EasyExcel;
 import com.um.psystem.controller.BaseController;
 import com.um.psystem.entity.ExcelHeader;
 import com.um.psystem.entity.mtEntity.AssetsDetail;
@@ -34,7 +32,7 @@ import java.util.stream.Collectors;
 
 /**
  * @Author: zzj
- * @Description: 物资分类控制器
+ * @Description: 物资管理控制器
  * @Date: 2020/5/29
  */
 @Controller
@@ -118,7 +116,6 @@ public class AssetsManageController extends BaseController {
     @ResponseBody
     public DataGrid getApplyGrid(@RequestParam Map map){
         List<Map<String,Object>> apply_list = iAssetsApplyService.getApplyList(map);
-        System.out.println(apply_list.size());
         int count=0;
         if(apply_list!=null && apply_list.size()>0)
         count =Integer.parseInt(apply_list.get(0).get("totals").toString());
@@ -510,6 +507,18 @@ public class AssetsManageController extends BaseController {
         OutputStream excelOutputStream = EasyExcelUtils.exportDataToExcel(headerList,dataList);
         response.getOutputStream().write(((ByteArrayOutputStream) excelOutputStream).toByteArray());
     }
+
+    /**
+     * 物资申请excel数据导出
+     * @param response
+     * @param map
+     */
+    @GetMapping("/exportApplyData")
+    public void exportApplyData(HttpServletResponse response,@RequestParam Map map)  {
+        System.out.println(map);
+        iAssetsApplyService.exportApplyData(response,map);
+    }
+
 
 
 }

@@ -10,6 +10,7 @@ var dialog_apply_form;
 var assetsDataGrid;
 var dialog_assets;
     $(function () {
+        //物资申请列表
         datagrid = $('#dg').datagrid({
             method: "get",
             url: getRootPath()+'/mtManage/assets/list_applyGrid',
@@ -86,6 +87,7 @@ var dialog_assets;
             onDblClickRow: function(index, row){
                 setVal("#type_main_name",row.type_main_name);
                 $("#apply_id").val(row.apply_id);
+                //修改物资申请
                 operator_apply();
             },
             queryParams: {
@@ -96,6 +98,7 @@ var dialog_assets;
         });
     });
 
+    //查询操作员
     function queryOperator() {
          var row_flow = flowDataGrid.datagrid('getSelected');
          if(row_flow == null){
@@ -108,6 +111,7 @@ var dialog_assets;
         );
     }
 
+    //流程查询
     function queryFlow() {
             $(flowDataGrid).datagrid('load', {
                     model_name:'工程物资申请'
@@ -115,6 +119,8 @@ var dialog_assets;
             );
     }
 
+
+    //物资申请查询
     function queryApply() {
         $(datagrid).datagrid('load', {
              erp_no:$("#erp_no_s").val(),
@@ -123,6 +129,15 @@ var dialog_assets;
         );
     }
 
+    // 导出物资申请excel
+    function exportApplyData(){
+        var erp_no = $("#erp_no_s").val();
+        var apply_man = $("#apply_man_s").val();
+        window.location.href=getRootPath()+'/mtManage/assets/exportApplyData?erp_no='+erp_no
+        +'&apply_man='+apply_man;
+    }
+
+    //添加操作员
     function add_operator() {
 
         var row_flow = flowDataGrid.datagrid('getSelected');
@@ -200,7 +215,7 @@ var dialog_assets;
         $("#operator_node").val(id);
 
     }
-
+    //流程添加
     function add_flow() {
         dialog_flow_form = $("#dlg_flow_form").dialog({
             title: '添加流程信息',
@@ -244,6 +259,7 @@ var dialog_assets;
 
     }
 
+    //添加申请
     function add_apply(){
         setVal("#dept_name","");
         setVal("#type_main_name","");
@@ -428,6 +444,7 @@ var dialog_assets;
         $("#operator_node").val(id);
     }
 
+    //物资申请编辑
     function edit_apply() {
 
         var row_apply = datagrid.datagrid('getSelected');
@@ -443,7 +460,7 @@ var dialog_assets;
         setVal("#dept_name",row_apply.dept_name);
         setVal("#type_main_name",row_apply.type_main_name);
         setVal("#type_dtl_name",row_apply.type_dtl_name);
-        setVal("#type_dlt_no",row_apply.type_dlt_no);
+        setVal("#type_dtl_no",row_apply.type_dtl_no);
         setVal("#model",row_apply.model);
         setVal("#sizes",row_apply.sizes);
         setVal("#return_plandate",new Date(row_apply.return_plandate).format('yyyy-MM-dd'));
@@ -539,7 +556,7 @@ var dialog_assets;
                             data: $('#form_apply').serialize(),
                             success: function (data) {
                                 if (data.code == 200) {
-                                    U.msg('添加成功');
+                                    U.msg('提交成功');
                                     dialog_apply_form.dialog('close');
                                     queryApply();
                                 } else if (data.code == 400) {//参数验证失败
@@ -620,12 +637,14 @@ var dialog_assets;
         });
 
         $('#applyBtn').hide();
+        $('#checkBtn').hide();
 
         //setVal自定义函数 位置common.js 因为用了easyui-textbox 所以显示还需要特殊赋值
         //setVal("#operator_info",node_name);
         //$("#operator_node").val(id);
     }
 
+//物资申请审核 打回操作
 function operator_apply() {
 
     var row_apply = datagrid.datagrid('getSelected');
@@ -637,10 +656,12 @@ function operator_apply() {
     var state = row_apply.state;
     var apply_man = row_apply.apply_man;
     var currentuser = row_apply.currentuser;
+    var node_seq = row_apply.node_seq;
+    var turn_node_seq = row_apply.turn_node_seq;
     setVal("#dept_name",row_apply.dept_name);
     setVal("#type_main_name",row_apply.type_main_name);
     setVal("#type_dtl_name",row_apply.type_dtl_name);
-    setVal("#type_dlt_no",row_apply.type_dlt_no);
+    setVal("#type_dtl_no",row_apply.type_dtl_no);
     setVal("#model",row_apply.model);
     setVal("#sizes",row_apply.sizes);
     setVal("#return_plandate",new Date(row_apply.return_plandate).format('yyyy-MM-dd'));
@@ -728,13 +749,14 @@ function operator_apply() {
             iconCls: 'icon-ok',
             handler: function () {
                 var isValid = $("#form_apply").form('validate');
-                //getFormJson("#form_apply","deptInfo","");
-                //console.log($('#form_apply'));
                 if (isValid) {
+                    var addObj = [{"name":"node_seq","value":node_seq},
+                        {"name":"turn_node_seq","value":turn_node_seq}
+                    ];
                     U.post({
                         url: getRootPath()+"/mtManage/assets/check_apply",
                         loading: true,
-                        data: $('#form_apply').serialize(),
+                        data: getFormJson("#form_apply","deptInfo",addObj),
                         success: function (data) {
                             if (data.code == 200) {
                                 U.msg('添加成功');
@@ -813,11 +835,20 @@ function operator_apply() {
         }]
     });
 
-    $('#applyBtn').hide();
+    //$('#applyBtn').hide();
     if("审核"==state){
         $('#issueBtn').hide();
     }
     if("已审核"==state){
+        $('#checkBtn').hide();
+        $('#backBtn').hide();
+    }
+    if("打回"==state){
+        $('#checkBtn').hide();
+        $('#backBtn').hide();
+        $('#issueBtn').hide();
+    }
+    if("发放"==state){
         $('#checkBtn').hide();
         $('#backBtn').hide();
     }
@@ -838,6 +869,8 @@ function operator_apply() {
                         $('#checkBtn').hide();
                         $('#backBtn').hide();
                         //$('#issueBtn').hide();
+                    }else if("发放"==state){
+                        $('#issueBtn').hide();
                     }
                 }
             } else if (data.code == 400) {//参数验证失败
