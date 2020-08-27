@@ -8,6 +8,7 @@ import com.um.psystem.service.mtService.IAssetsStockinService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,9 @@ public class AssetsStockinService implements IAssetsStockinService {
         Map paramsMap = new HashMap();
         String sql = "INSERT INTO ws_eng_assets_stockin_record" +
                 " VALUES" +
-                " (NULL, #{k3Code}, #{mtCode}, #{typeMain}, #{mtName}, #{model}, #{sizes}, #{unit},#{num}, #{supplier}, #{remarks} )";
+                " (NULL, #{k3Code}, #{mtCode}, #{typeMain}, #{mtName}," +
+                " #{model}, #{sizes}, #{unit}, #{num}, #{supplier}, #{remarks}," +
+                " #{username},now() )";
         paramsMap.put("isqlStr",sql);
         paramsMap.put("k3Code",map.get("k3Code"));
         paramsMap.put("mtCode",map.get("mtCode"));
@@ -85,6 +88,8 @@ public class AssetsStockinService implements IAssetsStockinService {
         paramsMap.put("num",Integer.parseInt((String) map.get("num")));
         paramsMap.put("supplier",map.get("supplier"));
         paramsMap.put("remarks",map.get("remarks"));
+        paramsMap.put("username",map.get("stockin_username"));
+       // paramsMap.put("datetime",new Date());
         return JsonResult.success(publicMapper.saveItems(paramsMap));
     }
 
@@ -94,7 +99,7 @@ public class AssetsStockinService implements IAssetsStockinService {
         String id = (String) map.get("id");
         String sql = "select id,k3_code as k3Code,mt_code as mtCode," +
                 "type_main as typeMain,mt_name as mtName,model,sizes,unit," +
-                "num,supplier,remarks from ws_eng_assets_stockin_record where id ="+id;
+                "num,supplier,remarks,username as stockin_username from ws_eng_assets_stockin_record where id ="+id;
         paramsMap.put("sqlStr",sql);
         return publicMapper.getPublicItems(paramsMap);
     }
@@ -106,7 +111,7 @@ public class AssetsStockinService implements IAssetsStockinService {
                 " SET" +
                 " k3_code=#{k3Code}, mt_code=#{mtCode}, type_main=#{typeMain}, " +
                 "mt_name=#{mtName}, model=#{model}, sizes=#{sizes}, unit=#{unit}," +
-                "num=#{num}, supplier=#{supplier}, remarks=#{remarks} " +
+                "num=#{num}, supplier=#{supplier}, remarks=#{remarks} ,datetime=now()" +
                 " WHERE id=#{id} ";
         paramsMap.put("usqlStr",sql);
         paramsMap.put("k3Code",map.get("k3Code"));
