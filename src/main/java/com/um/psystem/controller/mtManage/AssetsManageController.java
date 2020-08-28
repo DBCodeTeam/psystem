@@ -539,6 +539,17 @@ public class AssetsManageController extends BaseController {
     }
 
     /**
+     * 物资申请excel数据导出
+     * @param response
+     * @param map
+     */
+    @GetMapping("/exportApplyData")
+    public void exportApplyData(HttpServletResponse response,@RequestParam Map map)  {
+        System.out.println(map);
+        iAssetsApplyService.exportApplyData(response,map);
+    }
+
+    /**
      * 物资入库列表第一次加载数据导入
      *
      * @param map
