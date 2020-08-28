@@ -547,12 +547,12 @@ public class AssetsManageController extends BaseController {
     @RequestMapping(value = "/list_stockinGrid", method = RequestMethod.GET)
     @ResponseBody
     public DataGrid getStockinGrid(@RequestParam Map map) {
-        List<Map<String, Object>> apply_list = iAssetsStockinService.getStockinList(map);
-        System.out.println(apply_list.size());
+        List<Map<String, Object>> stockin_list = iAssetsStockinService.getStockinList(map);
+        System.out.println(stockin_list.size());
         int count = 0;
-        if (apply_list != null && apply_list.size() > 0)
-            count = Integer.parseInt(apply_list.get(0).get("totals").toString());
-        return buildDataGrid(apply_list, count);
+        if (stockin_list != null && stockin_list.size() > 0)
+            count = Integer.parseInt(stockin_list.get(0).get("totals").toString());
+        return buildDataGrid(stockin_list, count);
     }
 
     /**

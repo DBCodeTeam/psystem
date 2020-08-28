@@ -1,5 +1,6 @@
+
 $(function () {
-    $("#list").datagrid({
+     $("#list").datagrid({
         method: "get",
         url: getRootPath() + "/mtManage/assets/list_stockinGrid",
         columns: [[
@@ -181,15 +182,13 @@ var columShow = function colum_Show(value,row,index){
     return '<span title='+value+'>'+value+'</span>'
 }
 
-//物资入库查询
-// function queryStockin() {
-//     $("#list").datagrid('load', {
-//             erp_no:$("#k3_code").val(),
-//             stockin_man:$("#stockin_man_s").val()
-//         }
-//     );
-// }
+// 物资入库查询
 function queryStockin() {
-    $("#list").datagrid('load');
-
+    //console.log($("#stockin_man_s").val());
+    $("#list").datagrid('load', {
+            k3_code:$("#k3_code").val(),
+            stockin_man:$("#stockin_man_s").val()
+        }
+    );
 }
+

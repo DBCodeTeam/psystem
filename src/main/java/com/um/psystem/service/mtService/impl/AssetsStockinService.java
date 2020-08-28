@@ -27,23 +27,40 @@ public class AssetsStockinService implements IAssetsStockinService {
 
     @Override
     public List<Map<String, Object>> getStockinList(Map map) {
+        String k3_code="";
+        String sqltmp="";
+        String stockin_man="";
         Map paramsMap = new HashMap();
         Integer page = Integer.parseInt((map.get("page")!=null?map.get("page").toString():"0"));
         Integer rows = Integer.parseInt((map.get("rows")!=null?map.get("rows").toString():"0"));
-        String  sql = " select count(*) as totals from ws_eng_assets_stockin_record a where 1=1 ";
+        if(StrUtil.isNotBlank(map.get("k3_code")!=null?map.get("k3_code").toString():null)){
+            sqltmp+=" and a.k3_code=#{k3_code}";
+            k3_code =map.get("k3_code").toString();
+            paramsMap.put("k3_code",k3_code);
+        }
+        if(StrUtil.isNotBlank(map.get("stockin_man")!=null?map.get("stockin_man").toString():null)){
+            sqltmp+=" and a.username=#{stockin_man}";
+            stockin_man =map.get("stockin_man").toString();
+            paramsMap.put("stockin_man",stockin_man);
+        }
+        String  sql = " select count(*) as totals from ws_eng_assets_stockin_record a where 1=1 "+sqltmp;
+        System.out.println("--------------------------------------");
+        System.out.println("sql1:"+sql);
         paramsMap.put("sqlStr",sql);
         int totals=0;
         List<Map<String,Object>> list_count = publicMapper.getPublicItems(paramsMap);
         if(list_count.size()>0){
             totals = Integer.parseInt(list_count.get(0).get("totals").toString());
         }
-        sql = " select a.*,"+totals+ " as totals from ws_eng_assets_stockin_record a order by id desc";
+        sql = " select a.*,"+totals+ " as totals from ws_eng_assets_stockin_record a where 1=1 "+sqltmp+" order by id desc";
         if(page!=0 && rows!=0){
             sql+= " limit #{startIndex},#{rows} ";
             paramsMap.put("startIndex",(page-1)*rows);
             paramsMap.put("rows",rows);
         }
         paramsMap.put("sqlStr",sql);
+        System.out.println("--------------------------------------");
+        System.out.println("sql2:"+sql);
         return publicMapper.getPublicItems(paramsMap);
     }
 
