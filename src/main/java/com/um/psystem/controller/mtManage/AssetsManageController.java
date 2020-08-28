@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 /**
  * @Author: zzj
- * @Description: 物资分类控制器
+ * @Description: 物资管理控制器
  * @Date: 2020/5/29
  */
 @Controller
